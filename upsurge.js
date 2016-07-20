@@ -184,7 +184,7 @@ var upsurge = function upsurge( option ){
 			option.option = option.option || { };
 
 			glob( [
-					"server/local/option.js",
+					"server/local/_option.js",
 					"server/**/option.js",
 					"server/**/*-option.js"
 				],
@@ -269,7 +269,7 @@ var upsurge = function upsurge( option ){
 			option.constant = option.constant || { };
 
 			glob( [
-					"server/local/constant.js",
+					"server/local/_constant.js",
 					"server/**/constant.js",
 					"server/**/-constant.js"
 				],
@@ -963,13 +963,11 @@ var upsurge = function upsurge( option ){
 
 	function lastly( issue ){
 		if( issue ){
-			issue.remind( "failed loading application" ).prompt( "process exiting" );
-
-			process.exit( 0 );
+			issue.remind( "failed loading application" ).remind( "process exiting" );
 
 		}else{
 			Prompt( "finished loading application" )
-				.prompt( "application is now live, use",
+				.remind( "application is now live, use",
 					OPTION.environment.server.protocol + "://" +
 					OPTION.environment.server.domain + ":" +
 					OPTION.environment.server.port );
