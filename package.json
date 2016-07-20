@@ -1,0 +1,44 @@
+{
+  "name": "upsurge",
+  "version": "0.0.0",
+  "description": "Default server resources loading procedure based on standard practice.",
+  "main": "upsurge.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volkovasystems/upsurge.git"
+  },
+  "keywords": [
+    "upsurge",
+    "load-procedure",
+    "boot-sequence",
+    "standard-application-loading"
+  ],
+  "author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/volkovasystems/upsurge/issues"
+  },
+  "homepage": "https://github.com/volkovasystems/upsurge#readme",
+  "dependencies": {
+    "async": "^2.0.0",
+    "body-parser": "^1.15.2",
+    "called": "0.0.5",
+    "cobralize": "0.0.1",
+    "compression": "^1.6.2",
+    "cookie-parser": "^1.4.3",
+    "csurf": "^1.9.0",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "globby": "^5.0.0",
+    "harden": "^0.3.2",
+    "helmet": "^2.1.1",
+    "komento": "^0.2.4",
+    "llamalize": "^0.1.2",
+    "lodash": "^4.13.1",
+    "method-override": "^2.3.6",
+    "olivant": "^0.1.1"
+  }
+}
