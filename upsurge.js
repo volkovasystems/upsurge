@@ -719,6 +719,8 @@ var upsurge = function upsurge( option ){
 			} ) );
 
 			var mongoStore = function mongoStore( ){
+				var MongoStore = require( "connect-mongo" )( session );
+
 				return new MongoStore( OPTION.environment.server.session.store );
 			};
 
