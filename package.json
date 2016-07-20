@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -40,6 +40,6 @@
     "llamalize": "^0.1.2",
     "lodash": "^4.13.1",
     "method-override": "^2.3.6",
-    "olivant": "^0.1.1"
+    "olivant": "^0.1.2"
   }
 }
