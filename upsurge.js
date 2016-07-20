@@ -718,6 +718,12 @@ var upsurge = function upsurge( option ){
 				"level": OPTION.environment.server.compression.level
 			} ) );
 
+			var mongoStore = function mongoStore( ){
+				return new MongoStore( OPTION.environment.server.session.store );
+			};
+
+			SESSION_STORE[ "mongo-store" ] = mongoStore;
+
 			APP.use( session( {
 				"saveUninitialized": true,
 				"resave": true,
