@@ -538,7 +538,7 @@ var upsurge = function upsurge( option ){
 			callback = called( callback );
 
 			glob( [
-					"server/**/model.js"
+					"server/**/model.js",
 					"server/**/*-model.js"
 				],
 
@@ -765,7 +765,7 @@ var upsurge = function upsurge( option ){
 			option.router = option.router || { };
 
 			glob( [
-					"server/**/router.js"
+					"server/**/router.js",
 					"server/**/*-router.js"
 				],
 
