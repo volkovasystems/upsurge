@@ -57,6 +57,7 @@
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
 			"csrf": "csurf",
+			"dictate": "dictate",
 			"harden": "harden",
 			"helmet": "helmet",
 			"http": "http",
@@ -67,7 +68,8 @@
 			"olivant": "olivant",
 			"session": "express-session",
 			"path": "path",
-			"util": "util"
+			"util": "util",
+			"yargs": "yargs"
 		}
 	@end-include
 */
@@ -80,6 +82,7 @@ var cobralize = require( "cobralize" );
 var compression = require( "compression" );
 var cookieParser = require( "cookie-parser" );
 var csrf = require( "csurf" );
+var dictate = require( "dictate" );
 var express = require( "express" );
 var glob = require( "globby" );
 var harden = require( "harden" );
@@ -93,15 +96,41 @@ var olivant = require( "olivant" );
 var session = require( "express-session" );
 var path = require( "path" );
 var util = require( "util" );
+var yargs = require( "yargs" );
 
+/*;
+	@option:
+		{
+			"rootPath": "string",
+			"injective": {
+				"order": [
+					"[string]",
+					"object"
+				],
+				"list": "[function]"
+			}
+		}
+	@end-option
+*/
 var upsurge = function upsurge( option ){
+	/*;
+		@meta-configuration:
+			{
+				"option": "object"
+			}
+		@end-meta-configuration
+	*/
+
 	option = option || { };
 
 	option.rootPath = option.rootPath || process.cwd( );
 
 	var rootPath = option.rootPath;
 
-	async.series( [
+	//: These are any procedures that modify the flow of the upsurge.
+	option.injective = option.injective || { };
+
+	var flow = [
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
 
@@ -117,31 +146,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachInitialize( initializeList ){
-					async.series( initializeList
-						.map( function onEachInitialize( initializePath, index, initializeList ){
-							if( option.initialize.order ){
-								var order = option.initialize.order[ initializePath ];
-
-								if( typeof order != "number" &&
-									!order )
-								{
-									return initializePath;
-
-								}else if( order != index ){
-									var _initializePath = initializeList[ order ];
-
-									initializeList[ order ] = initializePath;
-
-									return _initializePath;
-
-								}else{
-									return initializePath;
-								}
-
-							}else{
-								return initializePath;
-							}
-						} )
+					async.series( dictate( initializeList, option.initialize.order )
 						.map( function onEachInitialize( initializePath ){
 							Prompt( "loading initialize", initializePath );
 
@@ -194,31 +199,7 @@ var upsurge = function upsurge( option ){
 				.then( function onEachOption( optionList ){
 					var OPTION = { };
 
-					optionList
-						.map( function onEachOption( optionPath, index, optionList ){
-							if( option.option.order ){
-								var order = option.option.order[ optionPath ];
-
-								if( typeof order != "number" &&
-									!order )
-								{
-									return optionPath;
-
-								}else if( order != index ){
-									var _optionPath = optionList[ order ];
-
-									optionList[ order ] = optionPath;
-
-									return _optionPath;
-
-								}else{
-									return optionPath;
-								}
-
-							}else{
-								return optionPath;
-							}
-						} )
+					dictate( optionList, option.option.order )
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
 
@@ -277,31 +258,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachConstant( constantList ){
-					constantList
-						.map( function onEachConstant( constantPath, index, constantList ){
-							if( option.constant.order ){
-								var order = option.constant.order[ constantPath ];
-
-								if( typeof order != "number" &&
-									!order )
-								{
-									return constantPath;
-
-								}else if( order != index ){
-									var _constantPath = constantList[ order ];
-
-									constantList[ order ] = constantPath;
-
-									return _constantPath;
-
-								}else{
-									return constantPath;
-								}
-
-							}else{
-								return constantPath;
-							}
-						} )
+					dictate( constantList, option.constant.order )
 						.forEach( function onEachConstant( constantPath ){
 							Prompt( "loading constant", constantPath );
 
@@ -374,29 +331,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachEngine( engineList ){
-					engineList
-						.map( function onEachEngine( enginePath, index, engineList ){
-							if( option.engine.order ){
-								var order = option.engine.order[ enginePath ];
-
-								if( !order ){
-									return enginePath;
-
-								}else if( order != index ){
-									var _enginePath = engineList[ order ];
-
-									engineList[ order ] = enginePath;
-
-									return _enginePath;
-
-								}else{
-									return enginePath;
-								}
-
-							}else{
-								return enginePath;
-							}
-						} )
+					dictate( engineList, option.engine.order )
 						.forEach( function onEachEngine( enginePath ){
 							Prompt( "loading engine", enginePath );
 
@@ -644,32 +579,7 @@ var upsurge = function upsurge( option ){
 
 				.then( function onEachDefault( defaultList ){
 					async
-						.series( defaultList
-							.map( function onEachDefault( defaultPath, index, defaultList ){
-								if( option.default.order ){
-									var order = option.default.order[ defaultPath ];
-
-									if( typeof order != "number" &&
-										!order )
-									{
-										return defaultPath;
-
-									}else if( order != index ){
-										var _defaultPath = defaultList[ order ];
-
-										defaultList[ order ] = defaultPath;
-
-										return _defaultPath;
-
-									}else{
-										return defaultPath;
-									}
-
-								}else{
-									return defaultPath;
-								}
-							} )
-
+						.series( dictate( defaultList, option.default.order )
 							.map( function onEachDefault( defaultPath ){
 								Prompt( "loading default", defaultPath );
 
@@ -862,31 +772,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachRouter( routerList ){
-					routerList
-						.map( function onEachRouter( routerPath, index, routerList ){
-							if( option.router.order ){
-								var order = option.router.order[ routerPath ];
-
-								if( typeof order != "number" &&
-									!order )
-								{
-									return routerPath;
-
-								}else if( order != index ){
-									var _routerPath = routerList[ order ];
-
-									routerList[ order ] = routerPath;
-
-									return _routerPath;
-
-								}else{
-									return routerPath;
-								}
-
-							}else{
-								return routerPath;
-							}
-						} )
+					dictate( routerList, option.router.order )
 						.forEach( function onEachRouter( routerPath ){
 							Prompt( "loading router", routerPath );
 
@@ -919,29 +805,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachAPI( APIList ){
-					APIList
-						.map( function onEachAPI( APIPath, index, APIList ){
-							if( option.API.order ){
-								var order = option.API.order[ APIPath ];
-
-								if( !order ){
-									return APIPath;
-
-								}else if( order != index ){
-									var _APIPath = APIList[ order ];
-
-									APIList[ order ] = APIPath;
-
-									return _APIPath;
-
-								}else{
-									return APIPath;
-								}
-
-							}else{
-								return APIPath;
-							}
-						} )
+					dictate( APIList, option.API.order )
 						.forEach( function onEachAPI( APIPath ){
 							Prompt( "loading API", APIPath );
 
@@ -959,20 +823,31 @@ var upsurge = function upsurge( option ){
 					callback( Issue( "loading API", error ) );
 				} );
 		}
-	],
+	];
 
-	function lastly( issue ){
-		if( issue ){
-			issue.remind( "failed loading application" ).remind( "process exiting" );
-
-		}else{
-			Prompt( "finished loading application" )
-				.remind( "application is now live, use",
-					OPTION.environment.server.protocol + "://" +
-					OPTION.environment.server.domain + ":" +
-					OPTION.environment.server.port );
+	if( option.injective ){
+		if( option.injective.list ){
+			flow = flow.concat( option.injective.list );
 		}
-	} );
+
+		if( option.injective.order ){
+			flow = dictate( flow, option.injective.order );
+		}
+	}
+
+	async.series( flow,
+		function lastly( issue ){
+			if( issue ){
+				issue.remind( "failed loading application" ).remind( "process exiting" );
+
+			}else{
+				Prompt( "finished loading application" )
+					.remind( "application is now live, use",
+						OPTION.environment.server.protocol + "://" +
+						OPTION.environment.server.domain + ":" +
+						OPTION.environment.server.port );
+			}
+		} );
 };
 
 module.exports = upsurge;
