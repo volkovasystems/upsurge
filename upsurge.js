@@ -53,6 +53,7 @@
 			"async": "async",
 			"bodyParser": "body-parser",
 			"called": "called",
+			"child": "child_process",
 			"cobralize": "cobralize",
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
@@ -66,6 +67,7 @@
 			"komento": "komento",
 			"llamalize": "llamalize",
 			"methodOverride": "method-override",
+			"mongoose": "mongoose",
 			"olivant": "olivant",
 			"session": "express-session",
 			"path": "path",
@@ -79,6 +81,7 @@ var _ = require( "lodash" );
 var async = require( "async" );
 var bodyParser = require( "body-parser" );
 var called = require( "called" );
+var child = require( "child_process" );
 var cobralize = require( "cobralize" );
 var compression = require( "compression" );
 var cookieParser = require( "cookie-parser" );
@@ -94,6 +97,7 @@ var https = require( "https" );
 var komento = require( "komento" );
 var llamalize = require( "llamalize" );
 var methodOverride = require( "method-override" );
+var mongoose = require( "mongoose" );
 var olivant = require( "olivant" );
 var session = require( "express-session" );
 var path = require( "path" );
