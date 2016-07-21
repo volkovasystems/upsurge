@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -31,9 +31,10 @@
     "connect-mongo": "^1.2.1",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.9.0",
-    "dictate": "^0.1.0",
+    "dictate": "^0.1.1",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
+    "fs-extra": "^0.30.0",
     "globby": "^5.0.0",
     "harden": "^0.3.2",
     "helmet": "^2.1.1",

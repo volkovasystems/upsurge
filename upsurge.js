@@ -58,6 +58,7 @@
 			"cookieParser": "cookie-parser",
 			"csrf": "csurf",
 			"dictate": "dictate",
+			"fs": "fs-extra",
 			"harden": "harden",
 			"helmet": "helmet",
 			"http": "http",
@@ -85,6 +86,7 @@ var csrf = require( "csurf" );
 var dictate = require( "dictate" );
 var express = require( "express" );
 var glob = require( "globby" );
+var fs = require( "fs-extra" );
 var harden = require( "harden" );
 var helmet = require( "helmet" );
 var http = require( "http" );
