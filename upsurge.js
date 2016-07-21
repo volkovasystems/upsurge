@@ -178,10 +178,10 @@ var upsurge = function upsurge( option ){
 		},
 
 		function loadOption( callback ){
-			var localOptionFile = path.resolve( rootPath, "server/local/option.js" );
+			var localOptionFile = path.resolve( rootPath, "server/local/_option.js" );
 
 			if( !fs.existsSync( localOptionFile ) ){
-				Warning( "no local option file found" ).prompt( );
+				Warning( "no local option file found", localOptionFile ).prompt( );
 			}
 
 			Prompt( "loading option" );
@@ -239,10 +239,10 @@ var upsurge = function upsurge( option ){
 		},
 
 		function loadConstant( callback ){
-			var localConstantFile = path.resolve( rootPath, "server/local/constant.js" );
+			var localConstantFile = path.resolve( rootPath, "server/local/_constant.js" );
 
 			if( !fs.existsSync( localConstantFile ) ){
-				Warning( "no local constant file found" ).prompt( );
+				Warning( "no local constant file found", localConstantFile ).prompt( );
 			}
 
 			Prompt( "loading constant" );
