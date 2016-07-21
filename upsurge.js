@@ -467,7 +467,7 @@ var upsurge = function upsurge( option ){
 								var _option = option[ database ];
 
 								if( ( new RegExp( database ) ).test( mongoProcess ) &&
-							 		/mongod \-\-fork/.test( mongoProcess ) )
+									( /mongod \-\-fork/ ).test( mongoProcess ) )
 								{
 									Prompt( "database process", database, "is already running" );
 
@@ -477,12 +477,16 @@ var upsurge = function upsurge( option ){
 										path.resolve( mongodbPath, "mongo" ),
 											"--port", _option.port,
 											"--eval",
-											"'db.getSiblingDB( \"@database\" ).shutdownServer( )'"
-												.replace( "@database", database )
+											"'db.getSiblingDB( \"admin\" ).shutdownServer( )'"
+									].join( " " ) );
+
+									child.execSync( [
+										"rm -fv",
+										path.resolve( _option.directory, "mongod.lock" )
 									].join( " " ) );
 								}
 
-								Prompt( "starting database process for", database );
+								Prompt( "starting database process", database );
 
 								var command = [
 									path.resolve( mongodbPath, "mongod" ),
@@ -509,7 +513,9 @@ var upsurge = function upsurge( option ){
 
 						Prompt( "finished initializing database process" );
 
-						callback( );
+						setTimeout( function onTimeout( ){
+							callback( );
+						}, 5000 );
 
 					}catch( error ){
 						callback( Issue( "starting database process", error ) );
@@ -634,13 +640,11 @@ var upsurge = function upsurge( option ){
 				"level": OPTION.environment.server.compression.level
 			} ) );
 
-			var mongoStore = function mongoStore( ){
+			harden( "SESSION_STORE", { } );
+			if( OPTION.environment.server.session.engine == "mongo-store" ){
 				var MongoStore = require( "connect-mongo" )( session );
-
-				return new MongoStore( OPTION.environment.server.session.store );
-			};
-
-			SESSION_STORE[ "mongo-store" ] = mongoStore;
+				SESSION_STORE[ "mongo-store" ] = new MongoStore( OPTION.environment.server.session.store );
+			}
 
 			APP.use( session( {
 				"saveUninitialized": true,
@@ -654,7 +658,7 @@ var upsurge = function upsurge( option ){
 				/*;
 					Enable us to use different session store engines.
 				*/
-				"store": SESSION_STORE[ OPTION.environment.server.session.engine ]( )
+				"store": SESSION_STORE[ OPTION.environment.server.session.engine ]
 			} ) );
 
 			//: For security purposes.
