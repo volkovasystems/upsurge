@@ -839,6 +839,50 @@ var upsurge = function upsurge( option ){
 				.catch( function onError( error ){
 					callback( Issue( "loading API", error ) );
 				} );
+		},
+
+		function loadFinalizer( callback ){
+			Prompt( "loading finalizer" );
+
+			callback = called( callback );
+
+			option.finalizer = option.finalizer || { };
+
+			glob( [
+					"server/**/finalizer.js",
+					"server/**/*-finalizer.js"
+				],
+
+				{ "cwd": rootPath } )
+
+				.then( function onEachFinalizer( finalizerList ){
+					async.series( dictate( finalizerList, option.finalizer.order )
+						.map( function onEachFinalizer( finalizerPath ){
+							Prompt( "loading finalizer", finalizerPath );
+
+							var finalizer = require( path.resolve( rootPath, finalizerPath ) );
+
+							if( finalizer == "function" ){
+								return finalizer;
+
+							}else{
+								Prompt( "finalizer", finalizerPath, "loaded" );
+							}
+						} )
+						.filter( function onEachFinalizer( finalizer ){
+							return !!finalizer;
+						} ),
+
+						function lastly( ){
+							Prompt( "finished loading finalizer" );
+
+							callback( );
+						} );
+				} )
+
+				.catch( function onError( error ){
+					callback( Issue( "loading finalizer", error ) );
+				} );
 		}
 	];
 
