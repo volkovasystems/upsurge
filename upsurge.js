@@ -322,40 +322,6 @@ var upsurge = function upsurge( option ){
 				} );
 		},
 
-		function loadEngine( callback ){
-			Prompt( "loading engine" );
-
-			callback = called( callback );
-
-			option.engine = option.engine || { };
-
-			glob( [
-					"server/**/engine.js",
-					"server/**/*-engine.js"
-				],
-
-				{ "cwd": rootPath } )
-
-				.then( function onEachEngine( engineList ){
-					dictate( engineList, option.engine.order )
-						.forEach( function onEachEngine( enginePath ){
-							Prompt( "loading engine", enginePath );
-
-							require( path.resolve( rootPath, enginePath ) );
-
-							Prompt( "engine", enginePath, "loaded" );
-						} );
-
-					Prompt( "finished loading engine" );
-
-					callback( );
-				} )
-
-				.catch( function onError( error ){
-					callback( Issue( "loading engine", error ) );
-				} );
-		},
-
 		function loadDatabase( callback ){
 			Prompt( "loading database" );
 
@@ -575,6 +541,40 @@ var upsurge = function upsurge( option ){
 				} );
 		},
 
+		function loadEngine( callback ){
+			Prompt( "loading engine" );
+
+			callback = called( callback );
+
+			option.engine = option.engine || { };
+
+			glob( [
+				"server/**/engine.js",
+				"server/**/*-engine.js"
+			],
+
+			{ "cwd": rootPath } )
+
+			.then( function onEachEngine( engineList ){
+				dictate( engineList, option.engine.order )
+				.forEach( function onEachEngine( enginePath ){
+					Prompt( "loading engine", enginePath );
+
+					require( path.resolve( rootPath, enginePath ) );
+
+					Prompt( "engine", enginePath, "loaded" );
+				} );
+
+				Prompt( "finished loading engine" );
+
+				callback( );
+			} )
+
+			.catch( function onError( error ){
+				callback( Issue( "loading engine", error ) );
+			} );
+		},
+
 		function loadDefault( callback ){
 			Prompt( "loading default" );
 
@@ -640,6 +640,7 @@ var upsurge = function upsurge( option ){
 				"level": OPTION.environment.server.compression.level
 			} ) );
 
+			//: This is the default session store.
 			harden( "SESSION_STORE", { } );
 			if( OPTION.environment.server.session.engine == "mongo-store" ){
 				var MongoStore = require( "connect-mongo" )( session );
