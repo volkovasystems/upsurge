@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {

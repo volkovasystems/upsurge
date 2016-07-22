@@ -674,6 +674,12 @@ var upsurge = function upsurge( option ){
 					"pre-check=0"
 				].join( ", " ) );
 
+			APP.get( "/ping",
+				function onPing( request, response ){
+					Prompt( "ping", new Date( ) )
+						.send( response );
+				} );
+
 			/*;
 				In order we send the client public environment variables
 					we will expose this path.
