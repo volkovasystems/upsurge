@@ -108,7 +108,8 @@ var ribosome = require( "ribosome" );
 var session = require( "express-session" );
 var path = require( "path" );
 var util = require( "util" );
-var yargs = require( "yargs" );
+
+var argv = require( "yargs" ).argv;
 
 /*;
 	@option:
@@ -169,7 +170,7 @@ var upsurge = function upsurge( option ){
 						} )
 						.map( function onEachInitialize( initializePath ){
 							var error = madhatter( initializePath );
-							
+
 							if( error ){
 								Fatal( "syntax error", error, initializePath );
 
@@ -244,8 +245,6 @@ var upsurge = function upsurge( option ){
 
 							Prompt( "option", optionPath, "loaded" );
 						} );
-
-					var argv = yargs.argv;
 
 					if( argv.production ){
 						OPTION.environment = OPTION.production || { };
