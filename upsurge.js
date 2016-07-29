@@ -66,9 +66,12 @@
 			"https": "https",
 			"komento": "komento",
 			"llamalize": "llamalize",
+			"madhatter": "madhatter",
 			"methodOverride": "method-override",
 			"mongoose": "mongoose",
+			"offcache": "offcache",
 			"olivant": "olivant",
+			"ribosome": "ribosome",
 			"session": "express-session",
 			"path": "path",
 			"util": "util",
@@ -96,9 +99,12 @@ var http = require( "http" );
 var https = require( "https" );
 var komento = require( "komento" );
 var llamalize = require( "llamalize" );
+var madhatter = require( "madhatter" );
 var methodOverride = require( "method-override" );
 var mongoose = require( "mongoose" );
+var offcache = require( "offcache" );
 var olivant = require( "olivant" );
+var ribosome = require( "ribosome" );
 var session = require( "express-session" );
 var path = require( "path" );
 var util = require( "util" );
@@ -136,6 +142,8 @@ var upsurge = function upsurge( option ){
 	//: These are any procedures that modify the flow of the upsurge.
 	option.injective = option.injective || { };
 
+	var service = argv.service || option.service;
+
 	var flow = [
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
@@ -147,16 +155,32 @@ var upsurge = function upsurge( option ){
 			glob( [
 					"server/**/initialize.js",
 					"server/**/*-initialize.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
 				.then( function onEachInitialize( initializeList ){
 					async.series( dictate( initializeList, option.initialize.order )
 						.map( function onEachInitialize( initializePath ){
+							return path.resolve( rootPath, initializePath );
+						} )
+						.map( function onEachInitialize( initializePath ){
+							var error = madhatter( initializePath );
+							
+							if( error ){
+								Fatal( "syntax error", error, initializePath );
+
+							}else{
+								return initializePath;
+							}
+						} )
+						.map( function onEachInitialize( initializePath ){
 							Prompt( "loading initialize", initializePath );
 
-							var initialize = require( path.resolve( rootPath, initializePath ) );
+							var initialize = require( initializePath );
 
 							if( initialize == "function" ){
 								return initialize;
@@ -198,7 +222,10 @@ var upsurge = function upsurge( option ){
 					"server/local/_option.js",
 					"server/**/option.js",
 					"server/**/*-option.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -232,6 +259,8 @@ var upsurge = function upsurge( option ){
 
 					harden( "OPTION", OPTION );
 
+
+
 					Prompt( "finished loading option" );
 
 					callback( );
@@ -259,7 +288,10 @@ var upsurge = function upsurge( option ){
 					"server/local/_constant.js",
 					"server/**/constant.js",
 					"server/**/-constant.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -323,13 +355,28 @@ var upsurge = function upsurge( option ){
 		},
 
 		function loadDatabase( callback ){
-			Prompt( "loading database" );
-
 			callback = called( callback );
 
-			var option = _( _.cloneDeep( OPTION.database ) )
-				.extend( _.cloneDeep( OPTION.environment.database ) )
-				.value( );
+			if( service &&
+				!( OPTION.environment[ service ] &&
+				OPTION.environment[ service ].database ) )
+			{
+				Prompt( "specific service does not require to load a database" );
+
+				callback( );
+
+				return;
+			}
+
+			Prompt( "loading database" );
+
+			var option = _.cloneDeep( OPTION.environment.database );
+			if( service &&
+				OPTION.environment[ service ] &&
+				OPTION.environment[ service ].database )
+			{
+				option = _.cloneDeep( OPTION.environment[ service ].database );
+			}
 
 			var database = _.keys( option );
 
@@ -492,7 +539,14 @@ var upsurge = function upsurge( option ){
 					_.each( database,
 						function onEachDatabase( database ){
 							harden( cobralize( database ),
-								mongoose.createConnection( option[ database ].url ) );
+								mongoose.createConnection( option[ database ].url, {
+									"server": {
+										"poolSize": option[ database ].poolSize || 5,
+										"socketOptions": {
+											"keepAlive": option[ database ].keepAlive || 500
+										}
+									}
+								} ) );
 						} );
 
 					callback( );
@@ -518,7 +572,10 @@ var upsurge = function upsurge( option ){
 			glob( [
 					"server/**/model.js",
 					"server/**/*-model.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -549,30 +606,33 @@ var upsurge = function upsurge( option ){
 			option.engine = option.engine || { };
 
 			glob( [
-				"server/**/engine.js",
-				"server/**/*-engine.js"
-			],
+					"server/**/engine.js",
+					"server/**/*-engine.js"
 
-			{ "cwd": rootPath } )
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
-			.then( function onEachEngine( engineList ){
-				dictate( engineList, option.engine.order )
-				.forEach( function onEachEngine( enginePath ){
-					Prompt( "loading engine", enginePath );
+				{ "cwd": rootPath } )
 
-					require( path.resolve( rootPath, enginePath ) );
+				.then( function onEachEngine( engineList ){
+					dictate( engineList, option.engine.order )
+					.forEach( function onEachEngine( enginePath ){
+						Prompt( "loading engine", enginePath );
 
-					Prompt( "engine", enginePath, "loaded" );
+						require( path.resolve( rootPath, enginePath ) );
+
+						Prompt( "engine", enginePath, "loaded" );
+					} );
+
+					Prompt( "finished loading engine" );
+
+					callback( );
+				} )
+
+				.catch( function onError( error ){
+					callback( Issue( "loading engine", error ) );
 				} );
-
-				Prompt( "finished loading engine" );
-
-				callback( );
-			} )
-
-			.catch( function onError( error ){
-				callback( Issue( "loading engine", error ) );
-			} );
 		},
 
 		function loadDefault( callback ){
@@ -585,7 +645,10 @@ var upsurge = function upsurge( option ){
 			glob( [
 					"server/**/default.js",
 					"server/**/*-default.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -623,57 +686,62 @@ var upsurge = function upsurge( option ){
 			*/
 			harden( "CSRF", csrf( { "cookie": true } ) );
 
-			APP.use( bodyParser.urlencoded( {
-				"extended": true,
-				"limit": OPTION.environment.server.body.parser.limit
-			} ) );
+			if( OPTION.environment.server.body ){
+				APP.use( bodyParser.urlencoded( {
+					"extended": true,
+					"limit": OPTION.environment.server.body.parser.limit
+				} ) );
 
-			APP.use( bodyParser.json( {
-				"limit": OPTION.environment.server.body.parser.limit
-			} ) );
+				APP.use( bodyParser.json( {
+					"limit": OPTION.environment.server.body.parser.limit
+				} ) );
+
+			}else{
+				Warning( "body parser middleware not configured" ).prompt( );
+			}
 
 			APP.use( cookieParser( ) );
 
 			APP.use( methodOverride( ) );
 
-			APP.use( compression( {
-				"level": OPTION.environment.server.compression.level
-			} ) );
+			if( OPTION.environment.server.compression ){
+				APP.use( compression( {
+					"level": OPTION.environment.server.compression.level
+				} ) );
 
-			//: This is the default session store.
-			harden( "SESSION_STORE", { } );
-			if( OPTION.environment.server.session.engine == "mongo-store" ){
-				var MongoStore = require( "connect-mongo" )( session );
-				SESSION_STORE[ "mongo-store" ] = new MongoStore( OPTION.environment.server.session.store );
+			}else{
+				Warning( "compression middleware not configured" ).prompt( );
 			}
 
-			APP.use( session( {
-				"saveUninitialized": true,
-				"resave": true,
+			if( OPTION.environment.server.session ){
+				//: This is the default session store.
+				harden( "SESSION_STORE", { } );
+				if( OPTION.environment.server.session.engine == "mongo-store" ){
+					var MongoStore = require( "connect-mongo" )( session );
+					SESSION_STORE[ "mongo-store" ] = new MongoStore( OPTION.environment.server.session.store );
+				}
 
-				"proxy": OPTION.environment.server.session.proxy,
-				"secret": OPTION.environment.server.session.secret,
+				APP.use( session( {
+					"saveUninitialized": true,
+					"resave": true,
 
-				"cookie": OPTION.environment.server.session.cookie,
+					"proxy": OPTION.environment.server.session.proxy,
+					"secret": OPTION.environment.server.session.secret,
 
-				/*;
-					Enable us to use different session store engines.
-				*/
-				"store": SESSION_STORE[ OPTION.environment.server.session.engine ]
-			} ) );
+					"cookie": OPTION.environment.server.session.cookie,
+
+					/*;
+						Enable us to use different session store engines.
+					*/
+					"store": SESSION_STORE[ OPTION.environment.server.session.engine ]
+				} ) );
+
+			}else{
+				Warning( "session middleware not configured" ).prompt( );
+			}
 
 			//: For security purposes.
 			APP.use( helmet( ) );
-
-			harden( "CACHE_CONTROL_HEADER", [
-					"no-cache",
-					"private",
-					"no-store",
-					"must-revalidate",
-					"max-stale=0",
-					"post-check=0",
-					"pre-check=0"
-				].join( ", " ) );
 
 			APP.get( "/ping",
 				function onPing( request, response ){
@@ -695,6 +763,27 @@ var upsurge = function upsurge( option ){
 				Modify client variables in option.client property.
 			*/
 			if( OPTION.environment.client ){
+				var environment = ribosome( function template( ){
+					/*!
+						var client = JSON.parse( "$client" );
+
+						for( var property in client ){
+							harden( property, client[ property ], window );
+						}
+
+						if( typeof $callback == "function" ){
+							var callback = $callback;
+
+							callback( null, client );
+						}
+					*/
+				}, {
+					"name": "environment",
+					"dependency": [
+						"harden@" + path.resolve( rootPath, "node_modules/harden/harden.js" )
+					]
+				} );
+
 				APP.get( "/environment",
 					function onGetEnvironment( request, response ){
 						var callback = request.query.callback || "callback";
@@ -707,43 +796,19 @@ var upsurge = function upsurge( option ){
 							return;
 						}
 
-						var environment = komento( function template( ){
+						var _environment = komento( function template( ){
 							/*!
-								( function ( ){
-									{{harden}}
-
-									var client = JSON.parse( "{{client}}" );
-
-									for( var property in client ){
-										harden( property, client[ property ], window );
-									}
-
-									if( typeof {{callback}} == "function" ){
-										var callback = {{callback}};
-
-										callback( null, client );
-									}
-								} )( );
+								( {{{environment}}} )( );
 							*/
-						},
+						}, { "environment": environment.toString( ) } )
+							.replace( /\$client/g, JSON.stringify( OPTION.environment.client ) )
+							.replace( /\$callback/g, callback );
 
-						{
-							"harden": fs.readFileSync( path.resolve( rootPath,
-								"node_modules",
-								"harden",
-								"harden.js" ), "utf8" ),
-
-							"client": JSON.stringify( OPTION.environment.client ),
-
-							"callback": callback
-						} );
-
-						response
+						offcache( response )
 							.status( 200 )
-							.header( "Cache-Control", CACHE_CONTROL_HEADER )
 							.set( {
 								"Content-Type": [
-										"text/javascript",
+										"application/javascript",
 										"charset=UTF-8"
 									].join( ";" ),
 
@@ -752,11 +817,37 @@ var upsurge = function upsurge( option ){
 										"filename=environment.js"
 									].join( ";" )
 							} )
-							.send( new Buffer( environment ) );
+							.send( new Buffer( _environment ) );
 					} );
 			}
 
-			APP.listen( OPTION.environment.server.port, OPTION.environment.server.host,
+			if( OPTION.environment[ service ].static &&
+				OPTION.environment[ service ].static.path )
+			{
+				var pathList = OPTION.environment[ service ].static.path;
+
+				for( var _path in pathList ){
+					APP.use( _path, express.static( path.resolve( rootPath, pathList[ _path ] ) ) );
+				}
+
+			}else if( OPTION.environment.static &&
+				OPTION.environment.static.path )
+			{
+				var pathList = OPTION.environment.static.path;
+
+				for( var _path in pathList ){
+					APP.use( _path, express.static( path.resolve( rootPath, pathList[ _path ] ) ) );
+				}
+			}
+
+			var port = OPTION.environment.server.port;
+			var host = OPTION.environment.server.host;
+			if( service ){
+				port = OPTION.environment[ service ].server.port || port;
+				host = OPTION.environment[ service ].server.host || host;
+			}
+
+			APP.listen( port, host,
 
 				function onListen( error ){
 					if( error ){
@@ -784,7 +875,10 @@ var upsurge = function upsurge( option ){
 			glob( [
 					"server/**/router.js",
 					"server/**/*-router.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -817,7 +911,10 @@ var upsurge = function upsurge( option ){
 
 			glob( [
 					"server/**/*-api.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -851,7 +948,10 @@ var upsurge = function upsurge( option ){
 			glob( [
 					"server/**/finalizer.js",
 					"server/**/*-finalizer.js"
-				],
+
+				].map( function onEachPattern( pattern ){
+					return pattern.replace( "**", service );
+				} ),
 
 				{ "cwd": rootPath } )
 
@@ -902,11 +1002,18 @@ var upsurge = function upsurge( option ){
 				issue.remind( "failed loading application" ).remind( "process exiting" );
 
 			}else{
+				var protocol = OPTION.environment.server.protocol;
+				var domain = OPTION.environment.server.domain;
+				var port = OPTION.environment.server.port;
+				if( service ){
+					protocol = OPTION.environment[ service ].server.protocol || protocol;
+					domain = OPTION.environment[ service ].server.domain || domain;
+					port = OPTION.environment[ service ].server.port || port;
+				}
+
 				Prompt( "finished loading application" )
 					.remind( "application is now live, use",
-						OPTION.environment.server.protocol + "://" +
-						OPTION.environment.server.domain + ":" +
-						OPTION.environment.server.port );
+						protocol + "://" + domain + ":" + port );
 			}
 		} );
 };
