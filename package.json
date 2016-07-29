@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "komento": "^0.2.4",
     "llamalize": "^0.1.2",
     "lodash": "^4.13.1",
-    "madhatter": "0.0.0",
+    "madhatter": "0.0.1",
     "method-override": "^2.3.6",
     "mongoose": "^4.5.5",
     "offcache": "0.0.0",
