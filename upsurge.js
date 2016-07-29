@@ -820,7 +820,8 @@ var upsurge = function upsurge( option ){
 					} );
 			}
 
-			if( OPTION.environment[ service ].static &&
+			if( service &&
+				OPTION.environment[ service ].static &&
 				OPTION.environment[ service ].static.path )
 			{
 				var pathList = OPTION.environment[ service ].static.path;
