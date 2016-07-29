@@ -158,7 +158,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-initialize.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -225,7 +230,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-option.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -289,7 +299,12 @@ var upsurge = function upsurge( option ){
 					"server/**/-constant.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -573,7 +588,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-model.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -609,7 +629,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-engine.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -646,7 +671,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-default.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -877,7 +907,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-router.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -913,7 +948,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-api.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
@@ -950,7 +990,12 @@ var upsurge = function upsurge( option ){
 					"server/**/*-finalizer.js"
 
 				].map( function onEachPattern( pattern ){
-					return pattern.replace( "**", service );
+					if( service ){
+						return pattern.replace( "**", service );
+
+					}else{
+						return pattern;
+					}
 				} ),
 
 				{ "cwd": rootPath } )
