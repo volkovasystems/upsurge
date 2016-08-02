@@ -58,6 +58,7 @@
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
 			"csrf": "csurf",
+			"dexist": "dexist",
 			"dictate": "dictate",
 			"fs": "fs-extra",
 			"harden": "harden",
@@ -89,6 +90,7 @@ var cobralize = require( "cobralize" );
 var compression = require( "compression" );
 var cookieParser = require( "cookie-parser" );
 var csrf = require( "csurf" );
+var dexist = require( "dexist" );
 var dictate = require( "dictate" );
 var express = require( "express" );
 var glob = require( "globby" );
