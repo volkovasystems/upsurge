@@ -146,6 +146,10 @@ var upsurge = function upsurge( option ){
 	var service = argv.service || option.service;
 
 	var flow = [
+		function killExistingProcess( callback ){
+			dexist( "mongod", callback );
+		},
+
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
 
@@ -244,10 +248,23 @@ var upsurge = function upsurge( option ){
 					var OPTION = { };
 
 					dictate( optionList, option.option.order )
+						.map( function onEachOption( optionPath ){
+							return path.resolve( rootPath, optionPath );
+						} )
+						.map( function onEachOption( optionPath ){
+							var error = madhatter( optionPath );
+
+							if( error ){
+								Fatal( "syntax error", error, optionPath );
+
+							}else{
+								return optionPath;
+							}
+						} )
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
 
-							var _optionPath = path.resolve( rootPath, optionPath );
+							var _optionPath = require( optionPath );
 
 							OPTION = _( _.cloneDeep( OPTION ) )
 								.extend( _.cloneDeep( require( _optionPath ) ) )
@@ -267,8 +284,6 @@ var upsurge = function upsurge( option ){
 					}
 
 					harden( "OPTION", OPTION );
-
-
 
 					Prompt( "finished loading option" );
 
@@ -311,10 +326,23 @@ var upsurge = function upsurge( option ){
 
 				.then( function onEachConstant( constantList ){
 					dictate( constantList, option.constant.order )
+						.map( function onEachConstant( constantPath ){
+							return path.resolve( rootPath, constantPath );
+						} )
+						.map( function onEachConstant( constantPath ){
+							var error = madhatter( constantPath );
+
+							if( error ){
+								Fatal( "syntax error", error, constantPath );
+
+							}else{
+								return constantPath;
+							}
+						} )
 						.forEach( function onEachConstant( constantPath ){
 							Prompt( "loading constant", constantPath );
 
-							var constantOption = require( path.resolve( rootPath, constantPath ) );
+							var constantOption = require( constantPath );
 
 							for( var property in constantOption ){
 								harden( cobralize( property ), constantOption[ property ] );
@@ -347,16 +375,30 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachUtility( utilityList ){
-					utilityList.forEach( function onEachUtility( utilityPath ){
-						Prompt( "loading utility", utilityPath );
+					utilityList
+						.map( function onEachUtility( utilityPath ){
+							return path.resolve( rootPath, utilityPath );
+						} )
+						.map( function onEachUtility( utilityPath ){
+							var error = madhatter( utilityPath );
 
-						var utilityName = utilityPath.match( /([a-z0-9-_]+)\.js$/ )[ 1 ];
-						utilityName = llamalize( utilityName );
+							if( error ){
+								Fatal( "syntax error", error, utilityPath );
 
-						require( path.resolve( rootPath, utilityPath ) );
+							}else{
+								return utilityPath;
+							}
+						} )
+						.forEach( function onEachUtility( utilityPath ){
+							Prompt( "loading utility", utilityPath );
 
-						Prompt( "utility", utilityPath, "loaded" );
-					} );
+							var utilityName = utilityPath.match( /([a-z0-9-_]+)\.js$/ )[ 1 ];
+							utilityName = llamalize( utilityName );
+
+							require( utilityPath );
+
+							Prompt( "utility", utilityPath, "loaded" );
+						} );
 
 					Prompt( "finished loading utility" );
 
@@ -599,13 +641,27 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachModel( modelList ){
-					modelList.forEach( function onEachModel( modelPath ){
-						Prompt( "loading model", modelPath );
+					modelList
+						.map( function onEachModel( modelPath ){
+							return path.resolve( rootPath, modelPath );
+						} )
+						.map( function onEachModel( modelPath ){
+							var error = madhatter( modelPath );
 
-						require( path.resolve( rootPath, modelPath ) );
+							if( error ){
+								Fatal( "syntax error", error, modelPath );
 
-						Prompt( "model", modelPath, "loaded" );
-					} );
+							}else{
+								return modelPath;
+							}
+						} )
+						.forEach( function onEachModel( modelPath ){
+							Prompt( "loading model", modelPath );
+
+							require( modelPath );
+
+							Prompt( "model", modelPath, "loaded" );
+						} );
 
 					Prompt( "finished loading model" );
 
@@ -641,13 +697,26 @@ var upsurge = function upsurge( option ){
 
 				.then( function onEachEngine( engineList ){
 					dictate( engineList, option.engine.order )
-					.forEach( function onEachEngine( enginePath ){
-						Prompt( "loading engine", enginePath );
+						.map( function onEachEngine( enginePath ){
+							return path.resolve( rootPath, enginePath );
+						} )
+						.map( function onEachEngine( enginePath ){
+							var error = madhatter( enginePath );
 
-						require( path.resolve( rootPath, enginePath ) );
+							if( error ){
+								Fatal( "syntax error", error, enginePath );
 
-						Prompt( "engine", enginePath, "loaded" );
-					} );
+							}else{
+								return enginePath;
+							}
+						} )
+						.forEach( function onEachEngine( enginePath ){
+							Prompt( "loading engine", enginePath );
+
+							require( enginePath );
+
+							Prompt( "engine", enginePath, "loaded" );
+						} );
 
 					Prompt( "finished loading engine" );
 
@@ -685,9 +754,22 @@ var upsurge = function upsurge( option ){
 					async
 						.series( dictate( defaultList, option.default.order )
 							.map( function onEachDefault( defaultPath ){
+								return path.resolve( rootPath, defaultPath );
+							} )
+							.map( function onEachDefault( defaultPath ){
+								var error = madhatter( defaultPath );
+
+								if( error ){
+									Fatal( "syntax error", error, defaultPath );
+
+								}else{
+									return defaultPath;
+								}
+							} )
+							.map( function onEachDefault( defaultPath ){
 								Prompt( "loading default", defaultPath );
 
-								return require( path.resolve( rootPath, defaultPath ) );
+								return require( defaultPath );
 							} ),
 
 						function lastly( ){
@@ -919,10 +1001,23 @@ var upsurge = function upsurge( option ){
 
 				.then( function onEachRouter( routerList ){
 					dictate( routerList, option.router.order )
+						.map( function onEachRouter( routerPath ){
+							return path.resolve( rootPath, routerPath );
+						} )
+						.map( function onEachRouter( routerPath ){
+							var error = madhatter( routerPath );
+
+							if( error ){
+								Fatal( "syntax error", error, routerPath );
+
+							}else{
+								return routerPath;
+							}
+						} )
 						.forEach( function onEachRouter( routerPath ){
 							Prompt( "loading router", routerPath );
 
-							require( path.resolve( rootPath, routerPath ) );
+							require( routerPath );
 
 							Prompt( "router", routerPath, "loaded" );
 						} );
@@ -960,10 +1055,23 @@ var upsurge = function upsurge( option ){
 
 				.then( function onEachAPI( APIList ){
 					dictate( APIList, option.API.order )
+						.map( function onEachAPI( APIPath ){
+							return path.resolve( rootPath, APIPath );
+						} )
+						.map( function onEachAPI( APIPath ){
+							var error = madhatter( APIPath );
+
+							if( error ){
+								Fatal( "syntax error", error, APIPath );
+
+							}else{
+								return APIPath;
+							}
+						} )
 						.forEach( function onEachAPI( APIPath ){
 							Prompt( "loading API", APIPath );
 
-							require( path.resolve( rootPath, APIPath ) );
+							require( APIPath );
 
 							Prompt( "API", APIPath, "loaded" );
 						} );
@@ -1001,11 +1109,25 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachFinalizer( finalizerList ){
-					async.series( dictate( finalizerList, option.finalizer.order )
+					async
+						.series( dictate( finalizerList, option.finalizer.order )
+						.map( function onEachFinalizer( finalizerPath ){
+							return path.resolve( rootPath, finalizerPath );
+						} )
+						.map( function onEachFinalizer( finalizerPath ){
+							var error = madhatter( finalizerPath );
+
+							if( error ){
+								Fatal( "syntax error", error, finalizerPath );
+
+							}else{
+								return finalizerPath;
+							}
+						} )
 						.map( function onEachFinalizer( finalizerPath ){
 							Prompt( "loading finalizer", finalizerPath );
 
-							var finalizer = require( path.resolve( rootPath, finalizerPath ) );
+							var finalizer = require( finalizerPath );
 
 							if( finalizer == "function" ){
 								return finalizer;

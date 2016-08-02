@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -31,6 +31,7 @@
     "connect-mongo": "^1.2.1",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.9.0",
+    "dexist": "0.0.0",
     "dictate": "^0.1.1",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
@@ -41,11 +42,11 @@
     "komento": "^0.2.4",
     "llamalize": "^0.1.2",
     "lodash": "^4.13.1",
-    "madhatter": "0.0.1",
+    "madhatter": "^0.1.0",
     "method-override": "^2.3.6",
     "mongoose": "^4.5.5",
     "offcache": "0.0.0",
-    "olivant": "^0.2.5",
+    "olivant": "^0.3.0",
     "ribosome": "0.0.0",
     "yargs": "^4.8.1"
   }
