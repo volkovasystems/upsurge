@@ -196,6 +196,9 @@ var upsurge = function upsurge( option ){
 								return initializePath;
 							}
 						} )
+						.filter( function onEachInitialize( initializePath ){
+							return !!initializePath;
+						} )
 						.map( function onEachInitialize( initializePath ){
 							Prompt( "loading initialize", initializePath );
 
@@ -269,6 +272,9 @@ var upsurge = function upsurge( option ){
 							}else{
 								return optionPath;
 							}
+						} )
+						.filter( function onEachOption( optionPath ){
+							return !!optionPath;
 						} )
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
@@ -348,6 +354,9 @@ var upsurge = function upsurge( option ){
 								return constantPath;
 							}
 						} )
+						.filter( function onEachConstant( constantPath ){
+							return !!constantPath;
+						} )
 						.forEach( function onEachConstant( constantPath ){
 							Prompt( "loading constant", constantPath );
 
@@ -397,6 +406,9 @@ var upsurge = function upsurge( option ){
 							}else{
 								return utilityPath;
 							}
+						} )
+						.filter( function onEachUtility( utilityPath ){
+							return !!utilityPath;
 						} )
 						.forEach( function onEachUtility( utilityPath ){
 							Prompt( "loading utility", utilityPath );
@@ -664,6 +676,9 @@ var upsurge = function upsurge( option ){
 								return modelPath;
 							}
 						} )
+						.filter( function onEachModel( modelPath ){
+							return !!modelPath;
+						} )
 						.forEach( function onEachModel( modelPath ){
 							Prompt( "loading model", modelPath );
 
@@ -718,6 +733,9 @@ var upsurge = function upsurge( option ){
 							}else{
 								return enginePath;
 							}
+						} )
+						.filter( function onEachEngine( enginePath ){
+							return !!enginePath;
 						} )
 						.forEach( function onEachEngine( enginePath ){
 							Prompt( "loading engine", enginePath );
@@ -774,6 +792,9 @@ var upsurge = function upsurge( option ){
 								}else{
 									return defaultPath;
 								}
+							} )
+							.filter( function onEachDefault( defaultPath ){
+								return !!defaultPath;
 							} )
 							.map( function onEachDefault( defaultPath ){
 								Prompt( "loading default", defaultPath );
@@ -1023,6 +1044,9 @@ var upsurge = function upsurge( option ){
 								return routerPath;
 							}
 						} )
+						.filter( function onEachRouter( routerPath ){
+							return !!routerPath;
+						} )
 						.forEach( function onEachRouter( routerPath ){
 							Prompt( "loading router", routerPath );
 
@@ -1076,6 +1100,9 @@ var upsurge = function upsurge( option ){
 							}else{
 								return APIPath;
 							}
+						} )
+						.filter( function onEachAPI( APIPath ){
+							return !!APIPath;
 						} )
 						.forEach( function onEachAPI( APIPath ){
 							Prompt( "loading API", APIPath );
@@ -1132,6 +1159,9 @@ var upsurge = function upsurge( option ){
 							}else{
 								return finalizerPath;
 							}
+						} )
+						.filter( function onEachFinalizer( finalizerPath ){
+							return !!finalizerPath;
 						} )
 						.map( function onEachFinalizer( finalizerPath ){
 							Prompt( "loading finalizer", finalizerPath );
