@@ -149,7 +149,14 @@ var upsurge = function upsurge( option ){
 
 	var flow = [
 		function killExistingProcess( callback ){
-			dexist( "mongod", callback );
+			dexist( "mongod", function onKill( error ){
+				if( error ){
+					callback( Issue( "error killing existing mongod process", error ) );
+
+				}else{
+					callback( );
+				}
+			} );
 		},
 
 		function loadInitialize( callback ){
