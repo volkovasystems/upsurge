@@ -190,7 +190,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( initializePath );
 
 							if( error ){
-								Fatal( "syntax error", error, initializePath );
+								callback( Fatal( "syntax error", error, initializePath ) );
 
 							}else{
 								return initializePath;
@@ -264,7 +264,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( optionPath );
 
 							if( error ){
-								Fatal( "syntax error", error, optionPath );
+								callback( Fatal( "syntax error", error, optionPath ) );
 
 							}else{
 								return optionPath;
@@ -342,7 +342,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( constantPath );
 
 							if( error ){
-								Fatal( "syntax error", error, constantPath );
+								callback( Fatal( "syntax error", error, constantPath ) );
 
 							}else{
 								return constantPath;
@@ -392,7 +392,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( utilityPath );
 
 							if( error ){
-								Fatal( "syntax error", error, utilityPath );
+								callback( Fatal( "syntax error", error, utilityPath ) );
 
 							}else{
 								return utilityPath;
@@ -658,7 +658,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( modelPath );
 
 							if( error ){
-								Fatal( "syntax error", error, modelPath );
+								callback( Fatal( "syntax error", error, modelPath ) );
 
 							}else{
 								return modelPath;
@@ -713,7 +713,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( enginePath );
 
 							if( error ){
-								Fatal( "syntax error", error, enginePath );
+								callback( Fatal( "syntax error", error, enginePath ) );
 
 							}else{
 								return enginePath;
@@ -769,7 +769,7 @@ var upsurge = function upsurge( option ){
 								var error = madhatter( defaultPath );
 
 								if( error ){
-									Fatal( "syntax error", error, defaultPath );
+									callback( Fatal( "syntax error", error, defaultPath ) );
 
 								}else{
 									return defaultPath;
@@ -1017,7 +1017,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( routerPath );
 
 							if( error ){
-								Fatal( "syntax error", error, routerPath );
+								callback( Fatal( "syntax error", error, routerPath ) );
 
 							}else{
 								return routerPath;
@@ -1071,7 +1071,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( APIPath );
 
 							if( error ){
-								Fatal( "syntax error", error, APIPath );
+								callback( Fatal( "syntax error", error, APIPath ) );
 
 							}else{
 								return APIPath;
@@ -1127,7 +1127,7 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( finalizerPath );
 
 							if( error ){
-								Fatal( "syntax error", error, finalizerPath );
+								callback( Fatal( "syntax error", error, finalizerPath ) );
 
 							}else{
 								return finalizerPath;
