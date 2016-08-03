@@ -279,10 +279,10 @@ var upsurge = function upsurge( option ){
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
 
-							var _optionPath = require( optionPath );
+							var option = require( optionPath );
 
 							OPTION = _( _.cloneDeep( OPTION ) )
-								.extend( _.cloneDeep( require( _optionPath ) ) )
+								.extend( _.cloneDeep( option ) )
 								.value( );
 
 							Prompt( "option", optionPath, "loaded" );
