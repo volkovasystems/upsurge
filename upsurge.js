@@ -1306,8 +1306,8 @@ var upsurge = function upsurge( option ){
 				}
 
 				Prompt( "finished loading application" )
-					.remind( "application is now live" )
-					.prompt( "use", protocol + "://" + domain + ":" + port );
+					.remind( "use", protocol + "://" + domain + ":" + port )
+					.remind( "application is now live" );
 			}
 		} );
 };
