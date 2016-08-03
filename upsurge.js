@@ -563,17 +563,31 @@ var upsurge = function upsurge( option ){
 
 									Prompt( "stopping database", database, "process" );
 
-									child.execSync( [
-										path.resolve( mongodbPath, "mongo" ),
-											"--port", _option.port,
-											"--eval",
-											"'db.getSiblingDB( \"admin\" ).shutdownServer( )'"
-									].join( " " ) );
+									try{
+										child.execSync( [
+											path.resolve( mongodbPath, "mongo" ),
+												"--port", _option.port,
+												"--eval",
+												"'db.getSiblingDB( \"admin\" ).shutdownServer( )'"
+										].join( " " ) );
 
-									child.execSync( [
-										"rm -fv",
-										path.resolve( _option.directory, "mongod.lock" )
-									].join( " " ) );
+									}catch( error ){
+										Warning( "cannot stop database process that is dead" )
+											.silence( )
+											.prompt( );
+									}
+
+									try{
+										child.execSync( [
+											"rm -fv",
+											path.resolve( _option.directory, "mongod.lock" )
+										].join( " " ) );
+
+									}catch( error ){
+										Warning( "cannot remove mongod.lock file that does not exists" )
+											.silence( )
+											.prompt( );
+									}
 								}
 
 								Prompt( "starting database process", database );

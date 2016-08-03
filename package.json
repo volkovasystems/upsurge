@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -46,7 +46,7 @@
     "method-override": "^2.3.6",
     "mongoose": "^4.5.5",
     "offcache": "0.0.0",
-    "olivant": "^0.3.1",
+    "olivant": "^0.4.0",
     "ribosome": "0.0.0",
     "yargs": "^4.8.1"
   }
