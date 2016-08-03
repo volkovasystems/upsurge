@@ -58,6 +58,7 @@
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
 			"csrf": "csurf",
+			"dexer": "dexer",
 			"dexist": "dexist",
 			"dictate": "dictate",
 			"fs": "fs-extra",
@@ -65,6 +66,7 @@
 			"helmet": "helmet",
 			"http": "http",
 			"https": "https",
+			"kept": "kept",
 			"komento": "komento",
 			"llamalize": "llamalize",
 			"madhatter": "madhatter",
@@ -72,6 +74,7 @@
 			"mongoose": "mongoose",
 			"offcache": "offcache",
 			"olivant": "olivant",
+			"pedon": "pedon",
 			"ribosome": "ribosome",
 			"session": "express-session",
 			"path": "path",
@@ -90,6 +93,7 @@ var cobralize = require( "cobralize" );
 var compression = require( "compression" );
 var cookieParser = require( "cookie-parser" );
 var csrf = require( "csurf" );
+var dexer = require( "dexer" );
 var dexist = require( "dexist" );
 var dictate = require( "dictate" );
 var express = require( "express" );
@@ -99,6 +103,7 @@ var harden = require( "harden" );
 var helmet = require( "helmet" );
 var http = require( "http" );
 var https = require( "https" );
+var kept = require( "kept" );
 var komento = require( "komento" );
 var llamalize = require( "llamalize" );
 var madhatter = require( "madhatter" );
@@ -106,6 +111,7 @@ var methodOverride = require( "method-override" );
 var mongoose = require( "mongoose" );
 var offcache = require( "offcache" );
 var olivant = require( "olivant" );
+var pedon = require( "pedon" );
 var ribosome = require( "ribosome" );
 var session = require( "express-session" );
 var path = require( "path" );
@@ -230,8 +236,10 @@ var upsurge = function upsurge( option ){
 		function loadOption( callback ){
 			var localOptionFile = path.resolve( rootPath, "server/local/_option.js" );
 
-			if( !fs.existsSync( localOptionFile ) ){
-				Warning( "no local option file found", localOptionFile ).prompt( );
+			if( !kept( localOptionFile ) ){
+				Warning( "no local option file found", localOptionFile )
+					.silence( )
+					.prompt( );
 			}
 
 			Prompt( "loading option" );
@@ -313,8 +321,10 @@ var upsurge = function upsurge( option ){
 		function loadConstant( callback ){
 			var localConstantFile = path.resolve( rootPath, "server/local/_constant.js" );
 
-			if( !fs.existsSync( localConstantFile ) ){
-				Warning( "no local constant file found", localConstantFile ).prompt( );
+			if( !kept( localConstantFile ) ){
+				Warning( "no local constant file found", localConstantFile )
+					.silence( )
+					.prompt( );
 			}
 
 			Prompt( "loading constant" );
@@ -459,6 +469,16 @@ var upsurge = function upsurge( option ){
 
 			async.series( [
 				function createDatabaseDirectory( callback ){
+					if( pedon.WINDOWS ){
+						Warning( "creating database directory not currently supported" )
+							.silence( )
+							.prompt( );
+
+						callback( );
+
+						return;
+					}
+
 					Prompt( "creating database directory" );
 
 					try{
@@ -473,7 +493,7 @@ var upsurge = function upsurge( option ){
 
 								option[ database ].directory = directory;
 
-								if( !fs.existsSync( directory ) ){
+								if( !kept( directory ) ){
 									Prompt( "creating database directory:", directory );
 
 									fs.mkdirSync( directory );
@@ -495,6 +515,16 @@ var upsurge = function upsurge( option ){
 				},
 
 				function createDatabaseLog( callback ){
+					if( pedon.WINDOWS ){
+						Warning( "creating database log not currently supported" )
+							.silence( )
+							.prompt( );
+
+						callback( );
+
+						return;
+					}
+
 					Prompt( "creating database log" );
 
 					try{
@@ -508,7 +538,7 @@ var upsurge = function upsurge( option ){
 
 								option[ database ].log = logFile;
 
-								if( !fs.existsSync( logFile ) ){
+								if( !kept( logFile ) ){
 									Prompt( "creating database log", logFile );
 
 									fs.closeSync( fs.openSync( logFile, "w" ) );
@@ -530,6 +560,16 @@ var upsurge = function upsurge( option ){
 				},
 
 				function startDatabase( callback ){
+					if( pedon.WINDOWS ){
+						Warning( "starting database not currently supported" )
+							.silence( )
+							.prompt( );
+
+						callback( );
+
+						return;
+					}
+
 					Prompt( "initializing database process" );
 
 					try{
@@ -617,9 +657,7 @@ var upsurge = function upsurge( option ){
 
 						Prompt( "finished initializing database process" );
 
-						setTimeout( function onTimeout( ){
-							callback( );
-						}, 5000 );
+						callback( );
 
 					}catch( error ){
 						callback( Issue( "starting database process", error ) );
@@ -627,8 +665,17 @@ var upsurge = function upsurge( option ){
 				},
 
 				function createDatabaseConnection( callback ){
-					_.each( database,
+					var completed = _.every( database,
 						function onEachDatabase( database ){
+							if( !option[ database ].url ){
+								Warning( "cannot create database connection" )
+									.remind( "due to incomplete data", database, option[ database ] )
+									.silence( )
+									.prompt( );
+
+								return false;
+							}
+
 							harden( cobralize( database ),
 								mongoose.createConnection( option[ database ].url, {
 									"server": {
@@ -638,9 +685,16 @@ var upsurge = function upsurge( option ){
 										}
 									}
 								} ) );
+
+							return true;
 						} );
 
-					callback( );
+					if( !completed ){
+						callback( Issue( "creating database connection not completed" ) );
+
+					}else{
+						callback( );
+					}
 				}
 			],
 				function lastly( error ){
@@ -852,7 +906,9 @@ var upsurge = function upsurge( option ){
 				} ) );
 
 			}else{
-				Warning( "body parser middleware not configured" ).prompt( );
+				Warning( "body parser middleware not configured" )
+					.silence( )
+					.prompt( );
 			}
 
 			APP.use( cookieParser( ) );
@@ -865,7 +921,9 @@ var upsurge = function upsurge( option ){
 				} ) );
 
 			}else{
-				Warning( "compression middleware not configured" ).prompt( );
+				Warning( "compression middleware not configured" )
+					.silence( )
+					.prompt( );
 			}
 
 			if( OPTION.environment.server.session ){
@@ -892,7 +950,9 @@ var upsurge = function upsurge( option ){
 				} ) );
 
 			}else{
-				Warning( "session middleware not configured" ).prompt( );
+				Warning( "session middleware not configured" )
+					.silence( )
+					.prompt( );
 			}
 
 			//: For security purposes.
@@ -976,22 +1036,32 @@ var upsurge = function upsurge( option ){
 					} );
 			}
 
+			var pathList = [ ];
 			if( service &&
 				OPTION.environment[ service ].static &&
 				OPTION.environment[ service ].static.path )
 			{
-				var pathList = OPTION.environment[ service ].static.path;
-
-				for( var _path in pathList ){
-					APP.use( _path, express.static( path.resolve( rootPath, pathList[ _path ] ) ) );
-				}
+				pathList = OPTION.environment[ service ].static.path;
 
 			}else if( OPTION.environment.static &&
 				OPTION.environment.static.path )
 			{
-				var pathList = OPTION.environment.static.path;
+				pathList = OPTION.environment.static.path;
+			}
 
-				for( var _path in pathList ){
+			for( var _path in pathList ){
+				if( _path == "/" ){
+					var indexPath = path.resolve( rootPath, pathList[ _path ] );
+
+					dexer( {
+						"app": APP,
+						"path": _path,
+						"index": indexPath,
+						"data": OPTION.environment.client,
+						"redirect": "/value/status/page"
+					} );
+
+				}else{
 					APP.use( _path, express.static( path.resolve( rootPath, pathList[ _path ] ) ) );
 				}
 			}
@@ -1182,7 +1252,7 @@ var upsurge = function upsurge( option ){
 
 							var finalizer = require( finalizerPath );
 
-							if( finalizer == "function" ){
+							if( typeof finalizer == "function" ){
 								return finalizer;
 
 							}else{
@@ -1219,7 +1289,11 @@ var upsurge = function upsurge( option ){
 	async.series( flow,
 		function lastly( issue ){
 			if( issue ){
-				issue.remind( "failed loading application" ).remind( "process exiting" );
+				issue
+					.remind( "failed loading application" )
+					.remind( "process exiting" )
+					.silence( )
+					.prompt( );
 
 			}else{
 				var protocol = OPTION.environment.server.protocol;
@@ -1232,8 +1306,8 @@ var upsurge = function upsurge( option ){
 				}
 
 				Prompt( "finished loading application" )
-					.remind( "application is now live, use",
-						protocol + "://" + domain + ":" + port );
+					.remind( "application is now live" )
+					.prompt( "use", protocol + "://" + domain + ":" + port );
 			}
 		} );
 };
