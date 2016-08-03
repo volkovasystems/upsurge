@@ -204,7 +204,7 @@ var upsurge = function upsurge( option ){
 
 							var initialize = require( initializePath );
 
-							if( initialize == "function" ){
+							if( typeof initialize == "function" ){
 								return initialize;
 
 							}else{
