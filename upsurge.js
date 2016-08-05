@@ -895,9 +895,13 @@ var upsurge = function upsurge( option ){
 			*/
 			harden( "CSRF", csrf( { "cookie": true } ) );
 
-			var bodyOption = ( service )?
-				OPTION.environment[ service ].body :
-				OPTION.environment.server.body;
+			var serverOption = OPTION.environment.server;
+			var serviceServerOption = null;
+			if( service ){
+				serviceServerOption = OPTION.environment[ service ].server;
+			}
+
+			var bodyOption = ( service )? serviceServerOption.body : serverOption.body;
 			if( bodyOption ){
 				APP.use( bodyParser.urlencoded( {
 					"extended": true,
@@ -919,8 +923,8 @@ var upsurge = function upsurge( option ){
 			APP.use( methodOverride( ) );
 
 			var compressionOption = ( service )?
-				OPTION.environment[ service ].compression :
-				OPTION.environment.server.compression;
+				serviceServerOption.compression :
+				serverOption.compression;
 			if( compressionOption ){
 				APP.use( compression( {
 					"level": compressionOption.level
@@ -932,9 +936,7 @@ var upsurge = function upsurge( option ){
 					.prompt( );
 			}
 
-			var sessionOption = ( service )?
-				OPTION.environment[ service ].session :
-				OPTION.environment.server.session;
+			var sessionOption = ( service )? serviceServerOption.session : serverOption.session;
 			if( sessionOption ){
 				//: This is the default session store.
 				harden( "SESSION_STORE", { } );
@@ -986,7 +988,13 @@ var upsurge = function upsurge( option ){
 
 				Modify client variables in option.client property.
 			*/
-			if( OPTION.environment.client ){
+			var clientOption = OPTION.environment.client;
+			if( service ){
+				clientOption = _.defaultsDeep
+					( _.cloneDeep( OPTION.environment[ service ].client || { } ),
+					_.cloneDeep( OPTION.environment.client ) );
+			}
+			if( clientOption ){
 				var environment = ribosome( function template( ){
 					/*!
 						var client = JSON.parse( "$client" );
@@ -1025,7 +1033,7 @@ var upsurge = function upsurge( option ){
 								( {{{environment}}} )( );
 							*/
 						}, { "environment": environment.toString( ) } )
-							.replace( /\$client/g, JSON.stringify( OPTION.environment.client ) )
+							.replace( /\$client/g, JSON.stringify( clientOption ) )
 							.replace( /\$callback/g, callback );
 
 						offcache( response )
@@ -1045,6 +1053,17 @@ var upsurge = function upsurge( option ){
 					} );
 			}
 
+			//: Configure default redirect path.
+			if( clientOption.default &&
+				clientOption.default.redirect &&
+				clientOption.default.redirect.path )
+			{
+				harden( "DEFAULT_REDIRECT_PATH", clientOption.default.redirect.path );
+
+			}else{
+				harden( "DEFAULT_REDIRECT_PATH", "/view/status/page" );
+			}
+
 			var pathList = [ ];
 			if( service &&
 				OPTION.environment[ service ].static &&
@@ -1057,7 +1076,6 @@ var upsurge = function upsurge( option ){
 			{
 				pathList = OPTION.environment.static.path;
 			}
-
 			for( var _path in pathList ){
 				if( _path == "/" ){
 					var indexPath = path.resolve( rootPath, pathList[ _path ] );
@@ -1066,24 +1084,24 @@ var upsurge = function upsurge( option ){
 						"app": APP,
 						"path": _path,
 						"index": indexPath,
-						"data": OPTION.environment.client,
-						"redirect": "/view/status/page"
+						"data": clientOption,
+						"redirect": DEFAULT_REDIRECT_PATH
 					} );
 
 				}else{
-					APP.use( _path, express.static( path.resolve( rootPath, pathList[ _path ] ) ) );
+					var staticPath = path.resolve( rootPath, pathList[ _path ] );
+
+					APP.use( _path, express.static( staticPath ) );
 				}
 			}
 
-			var port = OPTION.environment.server.port;
-			var host = OPTION.environment.server.host;
+			var port = serverOption.port;
+			var host = serverOption.host;
 			if( service ){
-				port = OPTION.environment[ service ].server.port || port;
-				host = OPTION.environment[ service ].server.host || host;
+				port = serviceServerOption.port || port;
+				host = serviceServerOption.host || host;
 			}
-
 			APP.listen( port, host,
-
 				function onListen( error ){
 					if( error ){
 						callback( Issue( "loading server", error ) );
