@@ -1067,7 +1067,7 @@ var upsurge = function upsurge( option ){
 						"path": _path,
 						"index": indexPath,
 						"data": OPTION.environment.client,
-						"redirect": "/value/status/page"
+						"redirect": "/view/status/page"
 					} );
 
 				}else{
