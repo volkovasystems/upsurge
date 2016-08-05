@@ -31,7 +31,7 @@
     "connect-mongo": "^1.2.1",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.9.0",
-    "dexer": "0.0.3",
+    "dexer": "0.0.4",
     "dexist": "0.0.1",
     "dictate": "^0.1.1",
     "express": "^4.14.0",
