@@ -895,14 +895,17 @@ var upsurge = function upsurge( option ){
 			*/
 			harden( "CSRF", csrf( { "cookie": true } ) );
 
-			if( OPTION.environment.server.body ){
+			var bodyOption = ( service )?
+				OPTION.environment[ service ].body :
+				OPTION.environment.server.body;
+			if( bodyOption ){
 				APP.use( bodyParser.urlencoded( {
 					"extended": true,
-					"limit": OPTION.environment.server.body.parser.limit
+					"limit": bodyOption.parser.limit
 				} ) );
 
 				APP.use( bodyParser.json( {
-					"limit": OPTION.environment.server.body.parser.limit
+					"limit": bodyOption.parser.limit
 				} ) );
 
 			}else{
@@ -915,9 +918,12 @@ var upsurge = function upsurge( option ){
 
 			APP.use( methodOverride( ) );
 
-			if( OPTION.environment.server.compression ){
+			var compressionOption = ( service )?
+				OPTION.environment[ service ].compression :
+				OPTION.environment.server.compression;
+			if( compressionOption ){
 				APP.use( compression( {
-					"level": OPTION.environment.server.compression.level
+					"level": compressionOption.level
 				} ) );
 
 			}else{
@@ -926,27 +932,30 @@ var upsurge = function upsurge( option ){
 					.prompt( );
 			}
 
-			if( OPTION.environment.server.session ){
+			var sessionOption = ( service )?
+				OPTION.environment[ service ].session :
+				OPTION.environment.server.session;
+			if( sessionOption ){
 				//: This is the default session store.
 				harden( "SESSION_STORE", { } );
-				if( OPTION.environment.server.session.engine == "mongo-store" ){
+				if( sessionOption.engine == "mongo-store" ){
 					var MongoStore = require( "connect-mongo" )( session );
-					SESSION_STORE[ "mongo-store" ] = new MongoStore( OPTION.environment.server.session.store );
+					SESSION_STORE[ "mongo-store" ] = new MongoStore( sessionOption.store );
 				}
 
 				APP.use( session( {
 					"saveUninitialized": true,
 					"resave": true,
 
-					"proxy": OPTION.environment.server.session.proxy,
-					"secret": OPTION.environment.server.session.secret,
+					"proxy": sessionOption.proxy,
+					"secret": sessionOption.secret,
 
-					"cookie": OPTION.environment.server.session.cookie,
+					"cookie": sessionOption.cookie,
 
 					/*;
 						Enable us to use different session store engines.
 					*/
-					"store": SESSION_STORE[ OPTION.environment.server.session.engine ]
+					"store": SESSION_STORE[ sessionOption.engine ]
 				} ) );
 
 			}else{
