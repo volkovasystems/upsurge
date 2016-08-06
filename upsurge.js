@@ -585,9 +585,10 @@ var upsurge = function upsurge( option ){
 									"grep " + database
 								].join( " | " ) ).toString( );
 
-								var mongodbVersion = child.execSync( "m --stable" )
-									.toString( )
-									.replace( /\s/g, "" );
+								var mongodbVersion = option[ database ].version ||
+									child.execSync( "m --stable" )
+										.toString( )
+										.replace( /\s/g, "" );
 
 								var mongodbPath = child.execSync( "m bin @version"
 									.replace( "@version", mongodbVersion ) )
