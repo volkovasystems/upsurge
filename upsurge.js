@@ -1003,7 +1003,7 @@ var upsurge = function upsurge( option ){
 			if( clientOption ){
 				var environment = ribosome( function template( ){
 					/*!
-						var client = JSON.parse( "$client" );
+						var client = JSON.parse( '$client' );
 
 						for( var property in client ){
 							harden( property, client[ property ], window );
@@ -1028,6 +1028,7 @@ var upsurge = function upsurge( option ){
 
 						if( !( /^\w+$/ ).test( _callback.toString( ) ) ){
 							Issue( "invalid callback", _callback )
+								.silent( )
 								.prompt( )
 								.send( response );
 
@@ -1041,6 +1042,16 @@ var upsurge = function upsurge( option ){
 						}, { "environment": environment.toString( ) } )
 							.replace( /\$client/g, JSON.stringify( clientOption ) )
 							.replace( /\$callback/g, _callback );
+
+						var error = madhatter( _environment );
+						if( error ){
+							Bug( "malformed environment script", error, _environment )
+								.silent( )
+								.prompt( )
+								.send( response );
+
+							return;
+						}
 
 						offcache( response )
 							.status( 200 )
