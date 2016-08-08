@@ -73,9 +73,10 @@
 			"methodOverride": "method-override",
 			"mongoose": "mongoose",
 			"offcache": "offcache",
-			"olivant": "olivant",
+			"Olivant": "olivant",
 			"pedon": "pedon",
 			"ribosome": "ribosome",
+			"ssbolt": "ssbolt",
 			"session": "express-session",
 			"path": "path",
 			"util": "util",
@@ -110,7 +111,7 @@ var madhatter = require( "madhatter" );
 var methodOverride = require( "method-override" );
 var mongoose = require( "mongoose" );
 var offcache = require( "offcache" );
-var olivant = require( "olivant" );
+var Olivant = require( "olivant" );
 var pedon = require( "pedon" );
 var ribosome = require( "ribosome" );
 var session = require( "express-session" );
@@ -970,6 +971,9 @@ var upsurge = function upsurge( option ){
 			//: For security purposes.
 			APP.use( helmet( ) );
 
+			//: This will handle the entire request-response error.
+			ssbolt( APP );
+
 			APP.get( "/ping",
 				function onPing( request, response ){
 					Prompt( "ping", new Date( ) )
@@ -1316,6 +1320,12 @@ var upsurge = function upsurge( option ){
 
 	async.series( flow,
 		function lastly( issue ){
+			var server = OPTION.environment.server;
+			var _server = server;
+			if( service ){
+				server = OPTION.environment[ service ].server;
+			}
+
 			if( issue ){
 				issue
 					.remind( "failed loading application" )
@@ -1324,14 +1334,9 @@ var upsurge = function upsurge( option ){
 					.prompt( );
 
 			}else{
-				var protocol = OPTION.environment.server.protocol;
-				var domain = OPTION.environment.server.domain;
-				var port = OPTION.environment.server.port;
-				if( service ){
-					protocol = OPTION.environment[ service ].server.protocol || protocol;
-					domain = OPTION.environment[ service ].server.domain || domain;
-					port = OPTION.environment[ service ].server.port || port;
-				}
+				var protocol = server.protocol || _server.protocol;
+				var domain = server.domain || _server.domain;
+				var port = server.port || _server.port;
 
 				Prompt( "finished loading application" )
 					.remind( "use", protocol + "://" + domain + ":" + port )
