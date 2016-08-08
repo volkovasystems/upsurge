@@ -115,6 +115,7 @@ var Olivant = require( "olivant" );
 var pedon = require( "pedon" );
 var ribosome = require( "ribosome" );
 var session = require( "express-session" );
+var ssbolt = require( "ssbolt" );
 var path = require( "path" );
 var util = require( "util" );
 
