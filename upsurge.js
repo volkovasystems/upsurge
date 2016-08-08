@@ -1024,10 +1024,10 @@ var upsurge = function upsurge( option ){
 
 				APP.get( "/environment",
 					function onGetEnvironment( request, response ){
-						var callback = request.query.callback || "callback";
+						var _callback = request.query.callback || "callback";
 
-						if( !( /^\w$/ ).test( callback.toString( ) ) ){
-							Issue( "invalid callback" )
+						if( !( /^\w+$/ ).test( _callback.toString( ) ) ){
+							Issue( "invalid callback", _callback )
 								.prompt( )
 								.send( response );
 
@@ -1040,7 +1040,7 @@ var upsurge = function upsurge( option ){
 							*/
 						}, { "environment": environment.toString( ) } )
 							.replace( /\$client/g, JSON.stringify( clientOption ) )
-							.replace( /\$callback/g, callback );
+							.replace( /\$callback/g, _callback );
 
 						offcache( response )
 							.status( 200 )
