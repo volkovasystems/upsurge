@@ -47,6 +47,10 @@
 	@example:
 	@end-example
 
+	@todo:
+		Use gnaw for any commands.
+	@end-todo
+
 	@include:
 		{
 			"_": "lodash",
@@ -67,6 +71,7 @@
 			"http": "http",
 			"https": "https",
 			"kept": "kept",
+			"kirov": "kirov",
 			"komento": "komento",
 			"llamalize": "llamalize",
 			"madhatter": "madhatter",
@@ -105,6 +110,7 @@ var helmet = require( "helmet" );
 var http = require( "http" );
 var https = require( "https" );
 var kept = require( "kept" );
+var kirov = require( "kirov" );
 var komento = require( "komento" );
 var llamalize = require( "llamalize" );
 var madhatter = require( "madhatter" );
@@ -1068,6 +1074,16 @@ var upsurge = function upsurge( option ){
 							} )
 							.send( new Buffer( _environment ) );
 					} );
+			}
+
+			var dependency = OPTION.environment.dependency;
+			if( service &&
+				OPTION.environment[ service ].dependency )
+			{
+				dependency = OPTION.environment[ service ].dependency
+			}
+			if( dependency ){
+				kirov( dependency );
 			}
 
 			//: Configure default redirect path.
