@@ -244,7 +244,7 @@ var upsurge = function upsurge( option ){
 		function loadOption( callback ){
 			var localOptionFile = path.resolve( rootPath, "server/local/_option.js" );
 
-			if( !kept( localOptionFile ) ){
+			if( !kept( localOptionFile, true ) ){
 				Warning( "no local option file found", localOptionFile )
 					.silence( )
 					.prompt( );
@@ -329,7 +329,7 @@ var upsurge = function upsurge( option ){
 		function loadConstant( callback ){
 			var localConstantFile = path.resolve( rootPath, "server/local/_constant.js" );
 
-			if( !kept( localConstantFile ) ){
+			if( !kept( localConstantFile, true ) ){
 				Warning( "no local constant file found", localConstantFile )
 					.silence( )
 					.prompt( );
@@ -501,7 +501,7 @@ var upsurge = function upsurge( option ){
 
 								option[ database ].directory = directory;
 
-								if( !kept( directory ) ){
+								if( !kept( directory, true ) ){
 									Prompt( "creating database directory:", directory );
 
 									fs.mkdirSync( directory );
@@ -546,7 +546,7 @@ var upsurge = function upsurge( option ){
 
 								option[ database ].log = logFile;
 
-								if( !kept( logFile ) ){
+								if( !kept( logFile, true ) ){
 									Prompt( "creating database log", logFile );
 
 									fs.closeSync( fs.openSync( logFile, "w" ) );
@@ -1076,6 +1076,7 @@ var upsurge = function upsurge( option ){
 					} );
 			}
 
+			//: Load dependency middleware if activated through options.
 			var dependency = OPTION.environment.dependency;
 			if( service &&
 				OPTION.environment[ service ].dependency )
