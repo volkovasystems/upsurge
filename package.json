@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "harden": "^0.3.2",
     "helmet": "^2.1.1",
     "kept": "^0.1.0",
-    "kirov": "0.0.6",
+    "kirov": "0.0.7",
     "komento": "^0.2.4",
     "llamalize": "^0.1.2",
     "lodash": "^4.14.1",
