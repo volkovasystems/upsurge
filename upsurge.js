@@ -42,10 +42,8 @@
 	@end-module-configuration
 
 	@module-documentation:
+		Default server resources loading procedure based on standard practice.
 	@end-module-documentation
-
-	@example:
-	@end-example
 
 	@todo:
 		Use gnaw for any commands.
@@ -55,6 +53,7 @@
 		{
 			"_": "lodash",
 			"async": "async",
+			"ate": "ate",
 			"bodyParser": "body-parser",
 			"called": "called",
 			"child": "child_process",
@@ -91,7 +90,7 @@
 */
 
 var _ = require( "lodash" );
-var async = require( "async" );
+var ate = require( "ate" );
 var bodyParser = require( "body-parser" );
 var called = require( "called" );
 var child = require( "child_process" );
@@ -120,6 +119,7 @@ var offcache = require( "offcache" );
 var Olivant = require( "olivant" );
 var pedon = require( "pedon" );
 var ribosome = require( "ribosome" );
+var series = require( "async" ).series;
 var session = require( "express-session" );
 var ssbolt = require( "ssbolt" );
 var path = require( "path" );
@@ -165,7 +165,8 @@ var upsurge = function upsurge( option ){
 		function killExistingProcess( callback ){
 			dexist( "mongod", function onKill( error ){
 				if( error ){
-					callback( Issue( "error killing existing mongod process", error ) );
+					Issue( "error killing existing mongod process", error )
+						.pass( callback );
 
 				}else{
 					callback( );
@@ -175,8 +176,6 @@ var upsurge = function upsurge( option ){
 
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
-
-			callback = called( callback );
 
 			option.initialize = option.initialize || { };
 
@@ -196,7 +195,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachInitialize( initializeList ){
-					async.series( dictate( initializeList, option.initialize.order )
+					series( dictate( initializeList, option.initialize.order )
 						.map( function onEachInitialize( initializePath ){
 							return path.resolve( rootPath, initializePath );
 						} )
@@ -204,7 +203,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( initializePath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, initializePath ) );
+								Fatal( "syntax error", error, initializePath )
+									.pass( callback );
 
 							}else{
 								return initializePath;
@@ -237,7 +237,8 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading initialize", error ) );
+					Issue( "loading initialize", error )
+						.pass( callback );
 				} );
 		},
 
@@ -252,9 +253,7 @@ var upsurge = function upsurge( option ){
 
 			Prompt( "loading option" );
 
-			callback = called( callback );
-
-			option.option = option.option || { };
+			option.choice = option.choice || { };
 
 			glob( [
 					"server/local/_option.js",
@@ -275,7 +274,7 @@ var upsurge = function upsurge( option ){
 				.then( function onEachOption( optionList ){
 					var OPTION = { };
 
-					dictate( optionList, option.option.order )
+					dictate( optionList, option.choice.order )
 						.map( function onEachOption( optionPath ){
 							return path.resolve( rootPath, optionPath );
 						} )
@@ -283,7 +282,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( optionPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, optionPath ) );
+								Fatal( "syntax error", error, optionPath )
+									.pass( callback );
 
 							}else{
 								return optionPath;
@@ -322,7 +322,8 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading option", error ) );
+					Issue( "loading option", error )
+						.pass( callback );
 				} );
 		},
 
@@ -336,8 +337,6 @@ var upsurge = function upsurge( option ){
 			}
 
 			Prompt( "loading constant" );
-
-			callback = called( callback );
 
 			option.constant = option.constant || { };
 
@@ -366,7 +365,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( constantPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, constantPath ) );
+								Fatal( "syntax error", error, constantPath )
+									.pass( callback );
 
 							}else{
 								return constantPath;
@@ -393,14 +393,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading constant", error ) );
+					Issue( "loading constant", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadUtility( callback ){
 			Prompt( "loading utility" );
-
-			callback = called( callback );
 
 			harden( "UTILITY", { } );
 
@@ -419,7 +418,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( utilityPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, utilityPath ) );
+								Fatal( "syntax error", error, utilityPath )
+									.pass( callback );
 
 							}else{
 								return utilityPath;
@@ -445,13 +445,12 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading utility", error ) );
+					Issue( "loading utility", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadDatabase( callback ){
-			callback = called( callback );
-
 			if( service &&
 				!( OPTION.environment[ service ] &&
 				OPTION.environment[ service ].database ) )
@@ -475,7 +474,7 @@ var upsurge = function upsurge( option ){
 
 			var database = _.keys( option );
 
-			async.series( [
+			series( [
 				function createDatabaseDirectory( callback ){
 					if( pedon.WINDOWS ){
 						Warning( "creating database directory not currently supported" )
@@ -502,7 +501,7 @@ var upsurge = function upsurge( option ){
 								option[ database ].directory = directory;
 
 								if( !kept( directory, true ) ){
-									Prompt( "creating database directory:", directory );
+									Prompt( "creating database directory", directory );
 
 									fs.mkdirSync( directory );
 
@@ -603,7 +602,7 @@ var upsurge = function upsurge( option ){
 									.toString( )
 									.replace( /\s/g, "" );
 
-								var _option = option[ database ];
+								var choice = option[ database ];
 
 								if( ( new RegExp( database ) ).test( mongoProcess ) &&
 									( /mongod \-\-fork/ ).test( mongoProcess ) )
@@ -615,7 +614,7 @@ var upsurge = function upsurge( option ){
 									try{
 										child.execSync( [
 											path.resolve( mongodbPath, "mongo" ),
-												"--port", _option.port,
+												"--port", choice.port,
 												"--eval",
 												"'db.getSiblingDB( \"admin\" ).shutdownServer( )'"
 										].join( " " ) );
@@ -629,11 +628,12 @@ var upsurge = function upsurge( option ){
 									try{
 										child.execSync( [
 											"rm -fv",
-											path.resolve( _option.directory, "mongod.lock" )
+											path.resolve( choice.directory, "mongod.lock" )
 										].join( " " ) );
 
 									}catch( error ){
-										Warning( "cannot remove mongod.lock file that does not exists" )
+										Warning( "cannot remove mongod.lock file", error )
+											.remind( "file does not exists" )
 											.silence( )
 											.prompt( );
 									}
@@ -644,24 +644,25 @@ var upsurge = function upsurge( option ){
 								var command = [
 									path.resolve( mongodbPath, "mongod" ),
 										"--fork",
-										"--logpath", _option.log,
-										"--port", _option.port,
-										"--bind_ip", _option.host,
-										"--dbpath", _option.directory,
+										"--logpath", choice.log,
+										"--port", choice.port,
+										"--bind_ip", choice.host,
+										"--dbpath", choice.directory,
 										"--smallfiles",
-										"&>", _option.log,
+										"&>", choice.log,
 										"&"
 								].join( " " );
 
 								child.execSync( command );
 
-								_option.url = [
+								choice.url = [
 									"mongodb:/",
-									_option.host + ":" + _option.port,
+									choice.host + ":" + choice.port,
 									database
 								].join( "/" );
 
-								Prompt( "database", database, "started with connection", _option.url );
+								Prompt( "database", database, "started" )
+									.remind( "using connection", choice.url );
 							} );
 
 						Prompt( "finished initializing database process" );
@@ -669,7 +670,8 @@ var upsurge = function upsurge( option ){
 						callback( );
 
 					}catch( error ){
-						callback( Issue( "starting database process", error ) );
+						Issue( "starting database process", error )
+							.pass( callback );
 					}
 				},
 
@@ -677,8 +679,8 @@ var upsurge = function upsurge( option ){
 					var completed = _.every( database,
 						function onEachDatabase( database ){
 							if( !option[ database ].url ){
-								Warning( "cannot create database connection" )
-									.remind( "due to incomplete data", database, option[ database ] )
+								Warning( "cannot create database connection", database )
+									.remind( "due to incomplete data", option[ database ] )
 									.silence( )
 									.prompt( );
 
@@ -699,7 +701,8 @@ var upsurge = function upsurge( option ){
 						} );
 
 					if( !completed ){
-						callback( Issue( "creating database connection not completed" ) );
+						Issue( "creating database connection not completed" )
+							.pass( callback );
 
 					}else{
 						callback( );
@@ -708,7 +711,8 @@ var upsurge = function upsurge( option ){
 			],
 				function lastly( error ){
 					if( error ){
-						callback( Issue( "loading database", error ) );
+						Issue( "loading database", error )
+							.pass( callback );
 
 					}else{
 						Prompt( "finished loading database" );
@@ -720,8 +724,6 @@ var upsurge = function upsurge( option ){
 
 		function loadModel( callback ){
 			Prompt( "loading model" );
-
-			callback = called( callback );
 
 			glob( [
 					"server/**/model.js",
@@ -747,7 +749,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( modelPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, modelPath ) );
+								Fatal( "syntax error", error, modelPath )
+									.pass( callback );
 
 							}else{
 								return modelPath;
@@ -770,14 +773,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading model", error ) );
+					Issue( "loading model", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadEngine( callback ){
 			Prompt( "loading engine" );
-
-			callback = called( callback );
 
 			option.engine = option.engine || { };
 
@@ -805,7 +807,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( enginePath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, enginePath ) );
+								Fatal( "syntax error", error, enginePath )
+									.pass( callback );
 
 							}else{
 								return enginePath;
@@ -828,14 +831,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading engine", error ) );
+					Issue( "loading engine", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadDefault( callback ){
 			Prompt( "loading default" );
-
-			callback = called( callback );
 
 			option.default = option.default || { };
 
@@ -864,7 +866,8 @@ var upsurge = function upsurge( option ){
 								var error = madhatter( defaultPath );
 
 								if( error ){
-									callback( Fatal( "syntax error", error, defaultPath ) );
+									Fatal( "syntax error", error, defaultPath )
+										.pass( callback );
 
 								}else{
 									return defaultPath;
@@ -887,14 +890,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading default", error ) );
+					Issue( "loading default", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadServer( callback ){
 			Prompt( "loading server" );
-
-			callback = called( callback );
 
 			//: Create a global express app.
 			harden( "APP", express( ) );
@@ -1004,7 +1006,7 @@ var upsurge = function upsurge( option ){
 			if( service ){
 				clientOption = _.defaultsDeep
 					( _.cloneDeep( OPTION.environment[ service ].client || { } ),
-					_.cloneDeep( OPTION.environment.client ) );
+						_.cloneDeep( OPTION.environment.client ) );
 			}
 			if( clientOption ){
 				var environment = ribosome( function template( ){
@@ -1030,10 +1032,10 @@ var upsurge = function upsurge( option ){
 
 				APP.get( "/environment",
 					function onGetEnvironment( request, response ){
-						var _callback = request.query.callback || "callback";
+						var done = request.query.callback || "callback";
 
-						if( !( /^\w+$/ ).test( _callback.toString( ) ) ){
-							Issue( "invalid callback", _callback )
+						if( !( /^\w+$/ ).test( done.toString( ) ) ){
+							Issue( "invalid callback", done )
 								.silent( )
 								.prompt( )
 								.send( response );
@@ -1041,17 +1043,20 @@ var upsurge = function upsurge( option ){
 							return;
 						}
 
-						var _environment = komento( function template( ){
+						var field = komento( function template( ){
 							/*!
 								( {{{environment}}} )( );
 							*/
-						}, { "environment": environment.toString( ) } )
-							.replace( /\$client/g, JSON.stringify( clientOption ) )
-							.replace( /\$callback/g, _callback );
+						},
 
-						var error = madhatter( _environment );
+						{ "environment": environment.toString( ) } )
+
+						.replace( /\$client/g, JSON.stringify( clientOption ) )
+						.replace( /\$callback/g, done );
+
+						var error = madhatter( field );
 						if( error ){
-							Bug( "malformed environment script", error, _environment )
+							Bug( "malformed environment script", error, field )
 								.silent( )
 								.prompt( )
 								.send( response );
@@ -1072,7 +1077,7 @@ var upsurge = function upsurge( option ){
 										"filename=environment.js"
 									].join( ";" )
 							} )
-							.send( new Buffer( _environment ) );
+							.send( new Buffer( field ) );
 					} );
 			}
 
@@ -1110,22 +1115,22 @@ var upsurge = function upsurge( option ){
 			{
 				pathList = OPTION.environment.static.path;
 			}
-			for( var _path in pathList ){
-				if( _path == "/" ){
-					var indexPath = path.resolve( rootPath, pathList[ _path ] );
+			for( var track in pathList ){
+				if( track == "/" ){
+					var indexPath = path.resolve( rootPath, pathList[ track ] );
 
 					dexer( {
 						"app": APP,
-						"path": _path,
+						"path": track,
 						"index": indexPath,
 						"data": clientOption,
 						"redirect": DEFAULT_REDIRECT_PATH
 					} );
 
 				}else{
-					var staticPath = path.resolve( rootPath, pathList[ _path ] );
+					var staticPath = path.resolve( rootPath, pathList[ track ] );
 
-					APP.use( _path, express.static( staticPath ) );
+					APP.use( track, express.static( staticPath ) );
 				}
 			}
 
@@ -1138,7 +1143,8 @@ var upsurge = function upsurge( option ){
 			APP.listen( port, host,
 				function onListen( error ){
 					if( error ){
-						callback( Issue( "loading server", error ) );
+						Issue( "loading server", error )
+							.pass( callback );
 
 					}else{
 						Prompt( "finished loading server" );
@@ -1150,8 +1156,6 @@ var upsurge = function upsurge( option ){
 
 		function loadRouter( callback ){
 			Prompt( "loading router" );
-
-			callback = called( callback );
 
 			var APIRouter = express.Router( );
 			harden( "API", APIRouter );
@@ -1183,7 +1187,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( routerPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, routerPath ) );
+								Fatal( "syntax error", error, routerPath )
+									.pass( callback );
 
 							}else{
 								return routerPath;
@@ -1206,14 +1211,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading router", error ) );
+					Issue( "loading router", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadAPI( callback ){
 			Prompt( "loading API" );
-
-			callback = called( callback );
 
 			option.API = option.API || { };
 
@@ -1240,7 +1244,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( APIPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, APIPath ) );
+								Fatal( "syntax error", error, APIPath )
+									.pass( callback );
 
 							}else{
 								return APIPath;
@@ -1263,14 +1268,13 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading API", error ) );
+					Issue( "loading API", error )
+						.pass( callback );
 				} );
 		},
 
 		function loadFinalizer( callback ){
 			Prompt( "loading finalizer" );
-
-			callback = called( callback );
 
 			option.finalizer = option.finalizer || { };
 
@@ -1299,7 +1303,8 @@ var upsurge = function upsurge( option ){
 							var error = madhatter( finalizerPath );
 
 							if( error ){
-								callback( Fatal( "syntax error", error, finalizerPath ) );
+								Fatal( "syntax error", error, finalizerPath )
+									.pass( callback );
 
 							}else{
 								return finalizerPath;
@@ -1332,7 +1337,8 @@ var upsurge = function upsurge( option ){
 				} )
 
 				.catch( function onError( error ){
-					callback( Issue( "loading finalizer", error ) );
+					Issue( "loading finalizer", error )
+						.pass( callback );
 				} );
 		}
 	];
@@ -1347,10 +1353,24 @@ var upsurge = function upsurge( option ){
 		}
 	}
 
-	async.series( flow,
+	series( flow
+		.map( function onEachFlow( procedure ){
+			var name = procedure.name;
+
+			var delegate = function delegate( callback ){
+				callback = called( callback );
+
+				return procedure( callback );
+			};
+
+			ate( "name", name, delegate );
+
+			return delegate;
+		} ),
+
 		function lastly( issue ){
 			var server = OPTION.environment.server;
-			var _server = server;
+			var rootServer = server;
 			if( service ){
 				server = OPTION.environment[ service ].server;
 			}
@@ -1363,9 +1383,9 @@ var upsurge = function upsurge( option ){
 					.prompt( );
 
 			}else{
-				var protocol = server.protocol || _server.protocol;
-				var domain = server.domain || _server.domain;
-				var port = server.port || _server.port;
+				var protocol = server.protocol || rootServer.protocol;
+				var domain = server.domain || rootServer.domain;
+				var port = server.port || rootServer.port;
 
 				Prompt( "finished loading application" )
 					.remind( "use", protocol + "://" + domain + ":" + port )
