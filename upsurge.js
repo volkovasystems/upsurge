@@ -43,6 +43,8 @@
 
 	@module-documentation:
 		Default server resources loading procedure based on standard practice.
+
+		Currently, default support for mongodb/mongoose.
 	@end-module-documentation
 
 	@todo:
@@ -690,7 +692,7 @@ var upsurge = function upsurge( option ){
 							harden( cobralize( database ),
 								mongoose.createConnection( option[ database ].url, {
 									"server": {
-										"poolSize": option[ database ].poolSize || 5,
+										"poolSize": option[ database ].poolSize || 10,
 										"socketOptions": {
 											"keepAlive": option[ database ].keepAlive || 500
 										}
