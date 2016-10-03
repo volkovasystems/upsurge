@@ -859,8 +859,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachDefault( defaultList ){
-					async
-						.series( dictate( defaultList, option.default.order )
+					series( dictate( defaultList, option.default.order )
 							.map( function onEachDefault( defaultPath ){
 								return path.resolve( rootPath, defaultPath );
 							} )
@@ -1296,8 +1295,7 @@ var upsurge = function upsurge( option ){
 				{ "cwd": rootPath } )
 
 				.then( function onEachFinalizer( finalizerList ){
-					async
-						.series( dictate( finalizerList, option.finalizer.order )
+					series( dictate( finalizerList, option.finalizer.order )
 						.map( function onEachFinalizer( finalizerPath ){
 							return path.resolve( rootPath, finalizerPath );
 						} )
