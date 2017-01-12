@@ -1,10 +1,10 @@
 {
   "name": "upsurge",
-  "version": "0.5.9",
+  "version": "0.6.0",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha upsurge-test.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,9 @@
     "standard-application-loading"
   ],
   "author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+  "contributors": [
+  	"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/volkovasystems/upsurge/issues"
