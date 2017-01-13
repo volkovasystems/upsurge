@@ -87,6 +87,7 @@
 			"ribosome": "ribosome",
 			"ssbolt": "ssbolt",
 			"session": "express-session",
+			"truu": "truu",
 			"path": "path",
 			"util": "util",
 			"yargs": "yargs"
@@ -107,7 +108,6 @@ const dexer = require( "dexer" );
 const dexist = require( "dexist" );
 const dictate = require( "dictate" );
 const express = require( "express" );
-const falze = require( "falze" );
 const fs = require( "fs-extra" );
 const glob = require( "globby" );
 const harden = require( "harden" );
@@ -129,6 +129,7 @@ const ribosome = require( "ribosome" );
 const series = require( "async" ).series;
 const session = require( "express-session" );
 const ssbolt = require( "ssbolt" );
+const truu = require( "truu" );
 const path = require( "path" );
 const util = require( "util" );
 
@@ -1348,12 +1349,12 @@ const upsurge = function upsurge( option ){
 		}
 	];
 
-	if( falze( option.injective ) ){
-		if( falze( option.injective.list ) ){
+	if( truu( option.injective ) ){
+		if( truu( option.injective.list ) ){
 			flow = flow.concat( option.injective.list );
 		}
 
-		if( falze( option.injective.order ) ){
+		if( truu( option.injective.order ) ){
 			flow = dictate( flow, option.injective.order );
 		}
 	}
