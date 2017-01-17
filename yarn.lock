@@ -26,8 +26,8 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
 ansi-regex@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.0.0.tgz#c5061b6e0ef8a81775e50f5d66151bf6bf371107"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -174,7 +174,7 @@ browser-fingerprint@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/browser-fingerprint/-/browser-fingerprint-0.0.1.tgz#8df3cdca25bf7d5b3542d61545d730053fce604a"
 
-bson@~1.0.1, bson@~1.0.4:
+bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
 
@@ -524,6 +524,15 @@ dexist@^0.2.0:
     protype "^0.8.0"
     snapd "^0.7.0"
 
+dexist@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/dexist/-/dexist-0.3.0.tgz#adec0ac5ab39ad1b7519ddc209f17385f9ed7192"
+  dependencies:
+    called "^0.6.0"
+    pedon "^0.3.0"
+    protype "^0.8.0"
+    snapd "^0.9.0"
+
 diatom@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/diatom/-/diatom-0.2.4.tgz#e9ac27407c86a1110e8ff9a5d075c769cfbd5447"
@@ -823,13 +832,12 @@ fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"
 
-fs-extra@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-1.0.0.tgz#cd3ce5f7e7cb6145883fcae3191e9877f8587950"
+fs-extra@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.0.0.tgz#337352bded4a0b714f3eb84de8cea765e9d37600"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
-    klaw "^1.0.0"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -894,7 +902,7 @@ gnaw@^0.2.0:
     protype "^0.8.0"
     zelf "^0.4.0"
 
-graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
+graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
@@ -934,25 +942,25 @@ has-ansi@^2.0.0:
   dependencies:
     ansi-regex "^2.0.0"
 
-helmet-csp@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/helmet-csp/-/helmet-csp-2.2.0.tgz#047888d9e04018dfbaddcf3a2eaa26865b3683f2"
+helmet-csp@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/helmet-csp/-/helmet-csp-2.3.0.tgz#bc341939dfef5266cc817abcf53f079f61fe7e3f"
   dependencies:
     camelize "1.0.0"
     content-security-policy-builder "1.1.0"
     dasherize "2.0.0"
     lodash.reduce "4.6.0"
-    platform "1.3.1"
+    platform "1.3.3"
 
-helmet@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.3.0.tgz#8eec02d8191ba97a6bdeccbf35f38326285136fd"
+helmet@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.4.0.tgz#05a9437486b05ca219ed8d21dc5e3b6ec0c18118"
   dependencies:
     connect "3.5.0"
     dns-prefetch-control "0.1.0"
     dont-sniff-mimetype "1.0.0"
     frameguard "3.0.0"
-    helmet-csp "2.2.0"
+    helmet-csp "2.3.0"
     hide-powered-by "1.0.0"
     hpkp "2.0.0"
     hsts "2.0.0"
@@ -1017,6 +1025,17 @@ ienoopen@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ienoopen/-/ienoopen-1.0.0.tgz#346a428f474aac8f50cf3784ea2d0f16f62bda6b"
 
+impel@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/impel/-/impel-0.3.0.tgz#15b036ab3980c65f2dfed92ae9474f9aba6b8f8e"
+  dependencies:
+    asea "^0.6.0"
+    babel-runtime "^6.20.0"
+    falzy "^0.7.0"
+    kein "^0.5.0"
+    protype "^0.8.0"
+    zelf "^0.4.0"
+
 inflight@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
@@ -1032,9 +1051,9 @@ invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
 
-ipaddr.js@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.1.1.tgz#c791d95f52b29c1247d5df80ada39b8a73647230"
+ipaddr.js@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.2.0.tgz#8aba49c9192799585bdd643e0ccb50e8ae777ba4"
 
 is-arrayish@^0.2.1:
   version "0.2.1"
@@ -1082,6 +1101,14 @@ kein@^0.2.0:
     falzy "^0.7.0"
     protype "^0.8.0"
 
+kein@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/kein/-/kein-0.5.0.tgz#959e59a7444f9f447652af403d05560416be5a69"
+  dependencies:
+    babel-runtime "^6.20.0"
+    falzy "^0.7.0"
+    protype "^0.8.0"
+
 kept@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/kept/-/kept-0.1.2.tgz#9153cfeb128ecf746e74e7b53b60d858ceb33574"
@@ -1109,9 +1136,9 @@ kind-of@^3.0.2:
   dependencies:
     is-buffer "^1.0.2"
 
-kirov@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/kirov/-/kirov-0.1.0.tgz#6a014401cb4cbd6d3702b7cb4d9c614c15578a6b"
+kirov@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/kirov/-/kirov-0.2.0.tgz#5c2132207e5eef7fc25a6a30520987f33d7d1e0e"
   dependencies:
     async "^2.1.4"
     called "^0.6.0"
@@ -1121,19 +1148,13 @@ kirov@^0.1.0:
     falze "^0.3.0"
     gnaw "^0.2.0"
     harden "^0.13.0"
-    helmet "^3.3.0"
+    helmet "^3.4.0"
     lilfy "^0.5.0"
     lire "^0.2.0"
     method-override "^2.3.7"
-    mime-types "^2.1.13"
+    mime-types "^2.1.14"
     olivant "^0.9.0"
-    ssbolt "^0.2.0"
-
-klaw@^1.0.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/klaw/-/klaw-1.3.1.tgz#4088433b46b3b1ba259d78785d8e96f73ba02439"
-  optionalDependencies:
-    graceful-fs "^4.1.9"
+    ssbolt "^0.3.0"
 
 kloak@0.0.0:
   version "0.0.0"
@@ -1290,11 +1311,12 @@ lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
 
-madhatter@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/madhatter/-/madhatter-0.3.0.tgz#0fc4d270911f0932a865934f8694794257a60239"
+madhatter@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/madhatter/-/madhatter-0.4.0.tgz#da8f3861c2b124ae2cd890f70e9cd70bfe5279b4"
   dependencies:
     asea "^0.6.0"
+    babel-runtime "^6.20.0"
     esprima "^3.1.3"
     syntax-error "^1.1.6"
     unused "^0.2.2"
@@ -1341,15 +1363,15 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-"mime-db@>= 1.24.0 < 2", mime-db@~1.25.0:
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.25.0.tgz#c18dbd7c73a5dbf6f44a024dc0d165a1e7b1c392"
+"mime-db@>= 1.24.0 < 2", mime-db@~1.26.0:
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.26.0.tgz#eaffcd0e4fc6935cf8134da246e2e6c35305adff"
 
-mime-types@^2.1.13, mime-types@~2.1.11, mime-types@~2.1.13:
-  version "2.1.13"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.13.tgz#e07aaa9c6c6b9a7ca3012c69003ad25a39e92a88"
+mime-types@^2.1.14, mime-types@~2.1.11, mime-types@~2.1.13:
+  version "2.1.14"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.14.tgz#f7ef7d97583fcaf3b7d282b6f8b5679dab1e94ee"
   dependencies:
-    mime-db "~1.25.0"
+    mime-db "~1.26.0"
 
 mime@1.3.4:
   version "1.3.4"
@@ -1369,45 +1391,30 @@ moment@^2.15.1, moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
-mongodb-core@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.2.tgz#a11db773d34819cbeb97751241827137ab535aab"
-  dependencies:
-    bson "~1.0.1"
-    require_optional "~1.0.0"
-
-mongodb-core@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.5.tgz#bad12e90d5e1a895214e9bc3375ea3a1cd539ec0"
+mongodb-core@2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.6.tgz#9d179e7487767c58993bb7c8d6685d035c346a42"
   dependencies:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb@2.2.16:
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.16.tgz#e32ba91cf9e29f371fb38ba0c4a71c3b1f5fae77"
+mongodb@2.2.21, "mongodb@>= 1.2.0 <3.0.0":
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.21.tgz#f7ee56489600e0ac8024c062c0857ac04ddb5f48"
   dependencies:
     es6-promise "3.2.1"
-    mongodb-core "2.1.2"
+    mongodb-core "2.1.6"
     readable-stream "2.1.5"
 
-"mongodb@>= 1.2.0 <3.0.0":
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.20.tgz#a6a00d33222874e0efe9eb598ebe8dbfeccf01d4"
-  dependencies:
-    es6-promise "3.2.1"
-    mongodb-core "2.1.5"
-    readable-stream "2.1.5"
-
-mongoose@^4.7.6:
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.7.6.tgz#704cc710efb98b74aeb8a3386d073c835498bd46"
+mongoose@^4.7.7:
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.7.7.tgz#45118baa56c0595c924e52288d23559f98a741de"
   dependencies:
     async "2.1.4"
-    bson "~1.0.1"
+    bson "~1.0.4"
     hooks-fixed "1.2.0"
     kareem "1.2.0"
-    mongodb "2.2.16"
+    mongodb "2.2.21"
     mpath "0.2.1"
     mpromise "0.5.5"
     mquery "2.0.0"
@@ -1471,8 +1478,8 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
 object-assign@^4.0.1:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
 offcache@0.0.1:
   version "0.0.1"
@@ -1691,9 +1698,9 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-platform@1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/platform/-/platform-1.3.1.tgz#492210892335bd3131c0a08dda2d93ec3543e423"
+platform@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/platform/-/platform-1.3.3.tgz#646c77011899870b6a0903e75e997e8e51da7461"
 
 plough@0.0.4:
   version "0.0.4"
@@ -1755,11 +1762,11 @@ protype@^0.8.0:
     harden "^0.12.0"
 
 proxy-addr@~1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.2.tgz#b4cc5f22610d9535824c123aef9d3cf73c40ba37"
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.3.tgz#dc97502f5722e888467b3fa2297a7b1ff47df074"
   dependencies:
     forwarded "~0.1.0"
-    ipaddr.js "1.1.1"
+    ipaddr.js "1.2.0"
 
 pyck@^0.5.0:
   version "0.5.0"
@@ -2025,6 +2032,21 @@ snapd@^0.7.0:
     protype "^0.8.0"
     zelf "^0.4.0"
 
+snapd@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/snapd/-/snapd-0.9.0.tgz#ec34e16db294382761c08ef16c377f222d45aa0b"
+  dependencies:
+    asea "^0.6.0"
+    babel-runtime "^6.20.0"
+    budge "^0.5.0"
+    harden "^0.13.0"
+    impel "^0.3.0"
+    kein "^0.5.0"
+    letgo "^0.6.0"
+    pringe "^0.2.0"
+    protype "^0.8.0"
+    zelf "^0.4.0"
+
 source-map@0.5.6, source-map@~0.5.1:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
@@ -2049,9 +2071,9 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-ssbolt@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ssbolt/-/ssbolt-0.2.0.tgz#dacc9f5b81c0f4a4f90dcb1eebcbd724205d8668"
+ssbolt@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ssbolt/-/ssbolt-0.3.0.tgz#1e2d282c341ead9fd01d33f482e67f7637b0cf90"
   dependencies:
     called "^0.6.0"
     exorcise "^0.3.0"
@@ -2060,7 +2082,7 @@ ssbolt@^0.2.0:
     optfor "^0.6.0"
     protype "^0.8.0"
     raze "^0.6.0"
-    snapd "^0.7.0"
+    snapd "^0.9.0"
 
 stack-generator@^1.0.7:
   version "1.1.0"
