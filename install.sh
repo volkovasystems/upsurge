@@ -1,0 +1,34 @@
+yarn add \
+async \
+ate \
+body-parser \
+called \
+cobralize \
+compression \
+connect-mongo \
+cookie-parser \
+csurf \
+dexer \
+dexist \
+dictate \
+express \
+express-session \
+fs-extra \
+globby \
+harden \
+helmet \
+kept \
+kirov \
+komento \
+llamalize \
+lodash \
+madhatter \
+method-override \
+mongoose \
+offcache \
+olivant \
+pedon \
+ribosome \
+ssbolt \
+yargs \
+--save
