@@ -1159,9 +1159,9 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-glucose@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/glucose/-/glucose-0.10.0.tgz#4c85fdac64e2f244f44f81835d6fc448cecbbbe6"
+glucose@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/glucose/-/glucose-0.11.0.tgz#1e14005ddfab71bdb917d4a3df04847b34b075e0"
   dependencies:
     babel-runtime "^6.22.0"
     clazof "^0.5.0"
@@ -1175,6 +1175,7 @@ glucose@^0.10.0:
     stuffed "^0.4.0"
     transpher "^0.5.0"
     truly "^0.9.0"
+    truu "^0.7.0"
     zelf "^0.6.0"
 
 glucose@^0.2.2:
@@ -1442,9 +1443,9 @@ kind-of@^3.0.2:
   dependencies:
     is-buffer "^1.0.2"
 
-kirov@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/kirov/-/kirov-0.3.0.tgz#e5eb00287792743ae3db091c812f174a3ea4c23e"
+kirov@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/kirov/-/kirov-0.4.0.tgz#3df978d6c2b038209ac81fc3d16e761c730a499b"
   dependencies:
     async "^2.1.4"
     called "^0.10.0"
@@ -1459,8 +1460,8 @@ kirov@^0.3.0:
     lire "^0.3.0"
     method-override "^2.3.7"
     mime-types "^2.1.14"
-    olivant "^0.11.0"
-    ssbolt "^0.4.0"
+    olivant "^0.12.0"
+    ssbolt "^0.5.0"
 
 kloak@0.0.0:
   version "0.0.0"
@@ -1900,9 +1901,9 @@ offcache@^0.4.0:
     falze "^0.5.0"
     protype "^0.11.0"
 
-olivant@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/olivant/-/olivant-0.11.0.tgz#2c23f9aa39c8eb17384b8d8ef54d7a90554e8651"
+olivant@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/olivant/-/olivant-0.12.0.tgz#6b2ad391b3852a6ab281af45bf9b1907364d4518"
   dependencies:
     arid "^0.7.0"
     asea "^0.8.0"
@@ -1919,7 +1920,7 @@ olivant@^0.11.0:
     falze "^0.5.0"
     falzy "^0.10.0"
     filled "^0.6.0"
-    glucose "^0.10.0"
+    glucose "^0.11.0"
     harden "^0.14.0"
     heredito "^0.17.0"
     kein "^0.8.0"
@@ -2590,14 +2591,14 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-ssbolt@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/ssbolt/-/ssbolt-0.4.0.tgz#a9dbf5f3086b26b536f05c184f7c21f6c49fad59"
+ssbolt@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/ssbolt/-/ssbolt-0.5.0.tgz#1737fe3628f9e0185d0a61aebcfc9ae4e0630e11"
   dependencies:
     called "^0.10.0"
     exorcise "^0.5.0"
     express "^4.14.1"
-    olivant "^0.11.0"
+    olivant "^0.12.0"
     optfor "^0.10.0"
     protype "^0.11.0"
     raze "^0.12.0"
