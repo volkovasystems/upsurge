@@ -61,6 +61,7 @@
 			"ate": "ate",
 			"bodyParser": "body-parser",
 			"called": "called",
+			"cheson": "cheson",
 			"child": "child_process",
 			"clazof": "clazof",
 			"cobralize": "cobralize",
@@ -77,6 +78,7 @@
 			"helmet": "helmet",
 			"http": "http",
 			"https": "https",
+			"jersy": "jersy",
 			"kept": "kept",
 			"kirov": "kirov",
 			"komento": "komento",
@@ -106,6 +108,7 @@ const _ = require( "lodash" );
 const ate = require( "ate" );
 const bodyParser = require( "body-parser" );
 const called = require( "called" );
+const cheson = require( "cheson" );
 const child = require( "child_process" );
 const clazof = require( "clazof" );
 const cobralize = require( "cobralize" );
@@ -124,6 +127,7 @@ const harden = require( "harden" );
 const helmet = require( "helmet" );
 const http = require( "http" );
 const https = require( "https" );
+const jersy = require( "jersy" );
 const kept = require( "kept" );
 const kirov = require( "kirov" );
 const komento = require( "komento" );
@@ -299,7 +303,7 @@ const upsurge = function upsurge( option ){
 							return path.resolve( rootPath, optionPath );
 						} )
 						.map( function onEachOption( optionPath ){
-							let error = madhatter( optionPath );
+							let error = cheson.evaluate( jersy( optionPath, true ) );
 
 							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, optionPath )
@@ -381,7 +385,7 @@ const upsurge = function upsurge( option ){
 							return path.resolve( rootPath, constantPath );
 						} )
 						.map( function onEachConstant( constantPath ){
-							let error = madhatter( constantPath );
+							let error = cheson.evaluate( jersy( constantPath, true ) );
 
 							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, constantPath )

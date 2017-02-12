@@ -3,6 +3,7 @@ async \
 ate \
 body-parser \
 called \
+cheson \
 clazof \
 cobralize \
 compression \
@@ -20,6 +21,7 @@ fs-extra \
 globby \
 harden \
 helmet \
+jersy \
 kept \
 kirov \
 komento \
