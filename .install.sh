@@ -3,6 +3,7 @@ async \
 ate \
 body-parser \
 called \
+clazof \
 cobralize \
 compression \
 connect-mongo \
@@ -13,6 +14,8 @@ dexist \
 dictate \
 express \
 express-session \
+falze \
+falzy \
 fs-extra \
 globby \
 harden \
@@ -28,7 +31,11 @@ mongoose \
 offcache \
 olivant \
 pedon \
+protype \
 ribosome \
 ssbolt \
+truly \
+truu \
+veur \
 yargs \
 --save

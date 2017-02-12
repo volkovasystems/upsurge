@@ -62,6 +62,7 @@
 			"bodyParser": "body-parser",
 			"called": "called",
 			"child": "child_process",
+			"clazof": "clazof",
 			"cobralize": "cobralize",
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
@@ -69,6 +70,8 @@
 			"dexer": "dexer",
 			"dexist": "dexist",
 			"dictate": "dictate",
+			"falze": "falze",
+			"falzy": "falzy",
 			"fs": "fs-extra",
 			"harden": "harden",
 			"helmet": "helmet",
@@ -87,19 +90,24 @@
 			"ribosome": "ribosome",
 			"ssbolt": "ssbolt",
 			"session": "express-session",
+			"truly": "truly",
 			"truu": "truu",
 			"path": "path",
 			"util": "util",
+			"veur": "veur",
 			"yargs": "yargs"
 		}
 	@end-include
 */
+
+require( "olivant" );
 
 const _ = require( "lodash" );
 const ate = require( "ate" );
 const bodyParser = require( "body-parser" );
 const called = require( "called" );
 const child = require( "child_process" );
+const clazof = require( "clazof" );
 const cobralize = require( "cobralize" );
 const compression = require( "compression" );
 const cookieParser = require( "cookie-parser" );
@@ -108,6 +116,8 @@ const dexer = require( "dexer" );
 const dexist = require( "dexist" );
 const dictate = require( "dictate" );
 const express = require( "express" );
+const falze = require( "falze" );
+const falzy = require( "falzy" );
 const fs = require( "fs-extra" );
 const glob = require( "globby" );
 const harden = require( "harden" );
@@ -122,18 +132,22 @@ const madhatter = require( "madhatter" );
 const methodOverride = require( "method-override" );
 const mongoose = require( "mongoose" );
 const offcache = require( "offcache" );
-const Olivant = require( "olivant" );
 const pedon = require( "pedon" );
 const protype = require( "protype" );
 const ribosome = require( "ribosome" );
 const series = require( "async" ).series;
 const session = require( "express-session" );
 const ssbolt = require( "ssbolt" );
+const truly = require( "truly" );
 const truu = require( "truu" );
 const path = require( "path" );
 const util = require( "util" );
+const veur = require( "veur" );
+const yarg = require( "yargs" );
 
-const argv = require( "yargs" ).argv;
+const DEFAULT_DATABASE_POOLSIZE = 10;
+const DEFAULT_DATABASE_KEEPALIVE = 500;
+const DEFAULT_BODY_PARSER_LIMIT = "50mb";
 
 /*;
 	@option:
@@ -158,22 +172,23 @@ const upsurge = function upsurge( option ){
 		@end-meta-configuration
 	*/
 
-	option = option || { };
+	option = truu( option )? option : { };
 
 	option.rootPath = option.rootPath || process.cwd( );
 
 	let rootPath = option.rootPath;
 
 	//: These are any procedures that modify the flow of the upsurge.
-	option.injective = option.injective || { };
+	option.injective = truu( option.injective )? option.injective : { };
 
-	let service = argv.service || option.service;
+	let parameter = yarg.argv;
+	let service = parameter.service || option.service;
 
 	let flow = [
 		function killExistingProcess( callback ){
 			dexist( "mongod", function onKill( error ){
-				if( error ){
-					Issue( "error killing existing mongod process", error )
+				if( clazof( error, Error ) ){
+					Issue( "killing existing mongod process", error )
 						.pass( callback );
 
 				}else{
@@ -185,14 +200,14 @@ const upsurge = function upsurge( option ){
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
 
-			option.initialize = option.initialize || { };
+			option.initialize = truu( option.initialize )? option.initialize : { };
 
 			glob( [
 					"server/**/initialize.js",
 					"server/**/*-initialize.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -210,7 +225,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachInitialize( initializePath ){
 							let error = madhatter( initializePath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, initializePath )
 									.pass( callback );
 
@@ -218,9 +233,7 @@ const upsurge = function upsurge( option ){
 								return initializePath;
 							}
 						} )
-						.filter( function onEachInitialize( initializePath ){
-							return !!initializePath;
-						} )
+						.filter( truly )
 						.map( function onEachInitialize( initializePath ){
 							Prompt( "loading initialize", initializePath );
 
@@ -233,9 +246,7 @@ const upsurge = function upsurge( option ){
 								Prompt( "initialize", initializePath, "loaded" );
 							}
 						} )
-						.filter( function onEachInitialize( initialize ){
-							return !!initialize;
-						} ),
+						.filter( truly ),
 
 						function lastly( ){
 							Prompt( "finished loading initialize" );
@@ -251,7 +262,7 @@ const upsurge = function upsurge( option ){
 		},
 
 		function loadOption( callback ){
-			let localOptionFile = path.resolve( rootPath, "server/local/option.js" );
+			let localOptionFile = path.resolve( rootPath, "server/local/option.json" );
 
 			if( !kept( localOptionFile, true ) ){
 				Warning( "no local option file found", localOptionFile )
@@ -261,15 +272,16 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading option" );
 
-			option.choice = option.choice || { };
+			option.choice = truu( option.choice )? option.choice : { };
 
 			glob( [
-					"server/local/option.js",
-					"server/**/option.js",
-					"server/**/*-option.js"
+					"!server/meta/option.json",
+					"server/local/option.json",
+					"server/**/option.json",
+					"server/**/*-option.json"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -289,7 +301,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachOption( optionPath ){
 							let error = madhatter( optionPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, optionPath )
 									.pass( callback );
 
@@ -297,9 +309,7 @@ const upsurge = function upsurge( option ){
 								return optionPath;
 							}
 						} )
-						.filter( function onEachOption( optionPath ){
-							return !!optionPath;
-						} )
+						.filter( truly )
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
 
@@ -312,14 +322,14 @@ const upsurge = function upsurge( option ){
 							Prompt( "option", optionPath, "loaded" );
 						} );
 
-					if( argv.production ){
-						OPTION.environment = OPTION.production || { };
+					if( parameter.production ){
+						OPTION.environment = truu( OPTION.production )? OPTION.production : { };
 
-					}else if( argv.staging ){
-						OPTION.environment = OPTION.staging || { };
+					}else if( parameter.staging ){
+						OPTION.environment = truu( OPTION.staging )? OPTION.staging : { };
 
 					}else{
-						OPTION.environment = OPTION.local || { };
+						OPTION.environment = truu( OPTION.local )? OPTION.local : { };
 					}
 
 					harden( "OPTION", OPTION );
@@ -336,7 +346,7 @@ const upsurge = function upsurge( option ){
 		},
 
 		function loadConstant( callback ){
-			let localConstantFile = path.resolve( rootPath, "server/local/constant.js" );
+			let localConstantFile = path.resolve( rootPath, "server/local/constant.json" );
 
 			if( !kept( localConstantFile, true ) ){
 				Warning( "no local constant file found", localConstantFile )
@@ -346,15 +356,16 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading constant" );
 
-			option.constant = option.constant || { };
+			option.constant = truu( option.constant )? option.constant : { };
 
 			glob( [
-					"server/local/constant.js",
-					"server/**/constant.js",
-					"server/**/-constant.js"
+					"!server/meta/constant.json",
+					"server/local/constant.json",
+					"server/**/constant.json",
+					"server/**/-constant.json"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -372,7 +383,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachConstant( constantPath ){
 							let error = madhatter( constantPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, constantPath )
 									.pass( callback );
 
@@ -380,9 +391,7 @@ const upsurge = function upsurge( option ){
 								return constantPath;
 							}
 						} )
-						.filter( function onEachConstant( constantPath ){
-							return !!constantPath;
-						} )
+						.filter( truly )
 						.forEach( function onEachConstant( constantPath ){
 							Prompt( "loading constant", constantPath );
 
@@ -425,7 +434,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachUtility( utilityPath ){
 							let error = madhatter( utilityPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, utilityPath )
 									.pass( callback );
 
@@ -433,9 +442,7 @@ const upsurge = function upsurge( option ){
 								return utilityPath;
 							}
 						} )
-						.filter( function onEachUtility( utilityPath ){
-							return !!utilityPath;
-						} )
+						.filter( truly )
 						.forEach( function onEachUtility( utilityPath ){
 							Prompt( "loading utility", utilityPath );
 
@@ -459,11 +466,12 @@ const upsurge = function upsurge( option ){
 		},
 
 		function loadDatabase( callback ){
-			if( service &&
-				!( OPTION.environment[ service ] &&
-				OPTION.environment[ service ].database ) )
+			if( truly( service ) &&
+				( falze( OPTION.environment[ service ] ) ||
+				falze( OPTION.environment[ service ].database ) ) )
 			{
-				Prompt( "specific service does not require to load a database" );
+				Prompt( "specific service does not require to load a database" )
+					.remind( "no database configuration given" );
 
 				callback( );
 
@@ -473,9 +481,9 @@ const upsurge = function upsurge( option ){
 			Prompt( "loading database" );
 
 			let option = _.cloneDeep( OPTION.environment.database );
-			if( service &&
-				OPTION.environment[ service ] &&
-				OPTION.environment[ service ].database )
+			if( truly( service ) &&
+				truu( OPTION.environment[ service ] ) &&
+				truu( OPTION.environment[ service ].database ) )
 			{
 				option = _.cloneDeep( OPTION.environment[ service ].database );
 			}
@@ -624,7 +632,7 @@ const upsurge = function upsurge( option ){
 											path.resolve( mongodbPath, "mongo" ),
 												"--port", choice.port,
 												"--eval",
-												"'db.getSiblingDB( \"admin\" ).shutdownServer( )'"
+												`'db.getSiblingDB( "admin" ).shutdownServer( )'`
 										].join( " " ) );
 
 									}catch( error ){
@@ -686,7 +694,16 @@ const upsurge = function upsurge( option ){
 				function createDatabaseConnection( callback ){
 					let completed = _.every( database,
 						function onEachDatabase( database ){
-							if( !option[ database ].url ){
+							if( falze( option[ database ] ) ){
+								Warning( "cannot create database connection", database )
+									.remind( "empty database data", option[ database ] )
+									.silence( )
+									.prompt( );
+
+								return false;
+							}
+
+							if( falzy( option[ database ].url ) ){
 								Warning( "cannot create database connection", database )
 									.remind( "due to incomplete data", option[ database ] )
 									.silence( )
@@ -738,7 +755,7 @@ const upsurge = function upsurge( option ){
 					"server/**/*-model.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -756,7 +773,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachModel( modelPath ){
 							let error = madhatter( modelPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, modelPath )
 									.pass( callback );
 
@@ -764,9 +781,7 @@ const upsurge = function upsurge( option ){
 								return modelPath;
 							}
 						} )
-						.filter( function onEachModel( modelPath ){
-							return !!modelPath;
-						} )
+						.filter( truly )
 						.forEach( function onEachModel( modelPath ){
 							Prompt( "loading model", modelPath );
 
@@ -789,14 +804,14 @@ const upsurge = function upsurge( option ){
 		function loadEngine( callback ){
 			Prompt( "loading engine" );
 
-			option.engine = option.engine || { };
+			option.engine = truu( option.engine )? option.engine : { };
 
 			glob( [
 					"server/**/engine.js",
 					"server/**/*-engine.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -814,7 +829,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachEngine( enginePath ){
 							let error = madhatter( enginePath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, enginePath )
 									.pass( callback );
 
@@ -822,9 +837,7 @@ const upsurge = function upsurge( option ){
 								return enginePath;
 							}
 						} )
-						.filter( function onEachEngine( enginePath ){
-							return !!enginePath;
-						} )
+						.filter( truly )
 						.forEach( function onEachEngine( enginePath ){
 							Prompt( "loading engine", enginePath );
 
@@ -847,14 +860,14 @@ const upsurge = function upsurge( option ){
 		function loadDefault( callback ){
 			Prompt( "loading default" );
 
-			option.default = option.default || { };
+			option.default = truu( option.default )? option.default : { };
 
 			glob( [
 					"server/**/default.js",
 					"server/**/*-default.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -872,7 +885,7 @@ const upsurge = function upsurge( option ){
 							.map( function onEachDefault( defaultPath ){
 								let error = madhatter( defaultPath );
 
-								if( error ){
+								if( clazof( error, Error ) ){
 									Fatal( "syntax error", error, defaultPath )
 										.pass( callback );
 
@@ -880,9 +893,7 @@ const upsurge = function upsurge( option ){
 									return defaultPath;
 								}
 							} )
-							.filter( function onEachDefault( defaultPath ){
-								return !!defaultPath;
-							} )
+							.filter( truly )
 							.map( function onEachDefault( defaultPath ){
 								Prompt( "loading default", defaultPath );
 
@@ -915,19 +926,22 @@ const upsurge = function upsurge( option ){
 
 			let serverOption = OPTION.environment.server;
 			let serviceServerOption = null;
-			if( service ){
+			if( truly( service ) ){
 				serviceServerOption = OPTION.environment[ service ].server;
 			}
 
-			let bodyOption = ( service )? serviceServerOption.body : serverOption.body;
-			if( bodyOption ){
+			let bodyOption = truly( service )? serviceServerOption.body : serverOption.body;
+			if( truu( bodyOption ) ){
+				let limit = ( truu( bodyOption.parser ) && bodyOption.parser.limit ) ||
+					DEFAULT_BODY_PARSER_LIMIT;
+
 				APP.use( bodyParser.urlencoded( {
 					"extended": true,
-					"limit": bodyOption.parser.limit
+					"limit": limit
 				} ) );
 
 				APP.use( bodyParser.json( {
-					"limit": bodyOption.parser.limit
+					"limit": limit
 				} ) );
 
 			}else{
@@ -940,10 +954,10 @@ const upsurge = function upsurge( option ){
 
 			APP.use( methodOverride( ) );
 
-			let compressionOption = ( service )?
+			let compressionOption = truly( service )?
 				serviceServerOption.compression :
 				serverOption.compression;
-			if( compressionOption ){
+			if( truu( compressionOption ) ){
 				APP.use( compression( {
 					"level": compressionOption.level
 				} ) );
@@ -954,8 +968,10 @@ const upsurge = function upsurge( option ){
 					.prompt( );
 			}
 
-			let sessionOption = ( service )? serviceServerOption.session : serverOption.session;
-			if( sessionOption ){
+			let sessionOption = truly( service )?
+				serviceServerOption.session :
+				serverOption.session;
+			if( truu( sessionOption ) ){
 				//: This is the default session store.
 				harden( "SESSION_STORE", { } );
 				if( sessionOption.engine == "mongo-store" ){
@@ -1010,12 +1026,12 @@ const upsurge = function upsurge( option ){
 				Modify client variables in option.client property.
 			*/
 			let clientOption = OPTION.environment.client;
-			if( service ){
+			if( truly( service ) ){
 				clientOption = _.defaultsDeep
 					( _.cloneDeep( OPTION.environment[ service ].client || { } ),
 						_.cloneDeep( OPTION.environment.client ) );
 			}
-			if( clientOption ){
+			if( truu( clientOption ) ){
 				let environment = ribosome( function template( ){
 					/*!
 						let client = JSON.parse( '$client' );
@@ -1052,7 +1068,7 @@ const upsurge = function upsurge( option ){
 
 						let field = komento( function template( ){
 							/*!
-								( {{{environment}}} )( );
+								( {{{ environment }}} )( );
 							*/
 						},
 
@@ -1062,7 +1078,7 @@ const upsurge = function upsurge( option ){
 						.replace( /\$callback/g, done );
 
 						let error = madhatter( field );
-						if( error ){
+						if( clazof( error, Error ) ){
 							Bug( "malformed environment script", error, field )
 								.silent( )
 								.prompt( )
@@ -1090,19 +1106,20 @@ const upsurge = function upsurge( option ){
 
 			//: Load dependency middleware if activated through options.
 			let dependency = OPTION.environment.dependency;
-			if( service &&
-				OPTION.environment[ service ].dependency )
+			if( truly( service ) &&
+				truu( OPTION.environment[ service ] ) &&
+				truu( OPTION.environment[ service ].dependency ) )
 			{
 				dependency = OPTION.environment[ service ].dependency
 			}
-			if( dependency ){
+			if( truu( dependency ) ){
 				kirov( dependency );
 			}
 
 			//: Configure default redirect path.
-			if( clientOption.default &&
-				clientOption.default.redirect &&
-				clientOption.default.redirect.path )
+			if( truu( clientOption.default ) &&
+				truu( clientOption.default.redirect ) &&
+				truly( clientOption.default.redirect.path ) )
 			{
 				harden( "DEFAULT_REDIRECT_PATH", clientOption.default.redirect.path );
 
@@ -1111,27 +1128,48 @@ const upsurge = function upsurge( option ){
 			}
 
 			let pathList = [ ];
-			if( service &&
-				OPTION.environment[ service ].static &&
-				OPTION.environment[ service ].static.path )
+			if( truly( service ) &&
+				truu( OPTION.environment[ service ] ) &&
+				truu( OPTION.environment[ service ].static ) &&
+				truly( OPTION.environment[ service ].static.path ) )
 			{
 				pathList = OPTION.environment[ service ].static.path;
 
-			}else if( OPTION.environment.static &&
-				OPTION.environment.static.path )
+			}else if( truu( OPTION.environment.static ) &&
+				truly( OPTION.environment.static.path ) )
 			{
 				pathList = OPTION.environment.static.path;
 			}
 			for( let track in pathList ){
-				if( track == "/" ){
-					let indexPath = path.resolve( rootPath, pathList[ track ] );
+				let pathOption = pathList[ track ];
+
+				if( track === "/" ){
+					let data = truu( pathOption.data )? pathOption.data : clientOption;
+					let redirect = truly( pathOption.redirect )? pathOption.redirect : DEFAULT_REDIRECT_PATH
 
 					dexer( {
-						"app": APP,
-						"path": track,
-						"index": indexPath,
-						"data": clientOption,
-						"redirect": DEFAULT_REDIRECT_PATH
+						"middleware": APP,
+						"rootPath": truly( pathOption.rootPath )? pathOption.rootPath : rootPath,
+						"clientPath": pathOption.clientPath,
+						"indexPath": pathOption.indexPath,
+						"index": pathOption.index,
+						"data": data,
+						"redirect": redirect
+					} );
+
+				}else if( ( /^\/view/ ).test( track ) ){
+					let data = truu( pathOption.data )? pathOption.data : clientOption;
+					let redirect = truly( pathOption.redirect )? pathOption.redirect : DEFAULT_REDIRECT_PATH
+
+					veur( {
+						"middleware": APP,
+						"rootPath": truly( pathOption.rootPath )? pathOption.rootPath : rootPath,
+						"clientPath": pathOption.clientPath,
+						"viewPath": pathOption.viewPath,
+						"view": pathOption.view,
+						"index": pathOption.index,
+						"data": data,
+						"redirect": redirect
 					} );
 
 				}else{
@@ -1143,13 +1181,13 @@ const upsurge = function upsurge( option ){
 
 			let port = serverOption.port;
 			let host = serverOption.host;
-			if( service ){
+			if( truly( service ) ){
 				port = serviceServerOption.port || port;
 				host = serviceServerOption.host || host;
 			}
 			APP.listen( port, host,
 				function onListen( error ){
-					if( error ){
+					if( clazof( error, Error ) ){
 						Issue( "loading server", error )
 							.pass( callback );
 
@@ -1168,14 +1206,14 @@ const upsurge = function upsurge( option ){
 			harden( "API", APIRouter );
 			APP.use( "/api/:key", APIRouter );
 
-			option.router = option.router || { };
+			option.router = truu( option.router )? option.router : { };
 
 			glob( [
 					"server/**/router.js",
 					"server/**/*-router.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -1193,7 +1231,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachRouter( routerPath ){
 							let error = madhatter( routerPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, routerPath )
 									.pass( callback );
 
@@ -1226,13 +1264,13 @@ const upsurge = function upsurge( option ){
 		function loadAPI( callback ){
 			Prompt( "loading API" );
 
-			option.API = option.API || { };
+			option.API = truu( option.API )? option.API : { };
 
 			glob( [
 					"server/**/*-api.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -1250,7 +1288,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachAPI( APIPath ){
 							let error = madhatter( APIPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, APIPath )
 									.pass( callback );
 
@@ -1283,14 +1321,14 @@ const upsurge = function upsurge( option ){
 		function loadFinalizer( callback ){
 			Prompt( "loading finalizer" );
 
-			option.finalizer = option.finalizer || { };
+			option.finalizer = truu( option.finalizer )? option.finalizer : { };
 
 			glob( [
 					"server/**/finalizer.js",
 					"server/**/*-finalizer.js"
 
 				].map( function onEachPattern( pattern ){
-					if( service ){
+					if( truly( service ) ){
 						return pattern.replace( "**", service );
 
 					}else{
@@ -1308,7 +1346,7 @@ const upsurge = function upsurge( option ){
 						.map( function onEachFinalizer( finalizerPath ){
 							let error = madhatter( finalizerPath );
 
-							if( error ){
+							if( clazof( error, Error ) ){
 								Fatal( "syntax error", error, finalizerPath )
 									.pass( callback );
 
@@ -1316,9 +1354,7 @@ const upsurge = function upsurge( option ){
 								return finalizerPath;
 							}
 						} )
-						.filter( function onEachFinalizer( finalizerPath ){
-							return !!finalizerPath;
-						} )
+						.filter( truly )
 						.map( function onEachFinalizer( finalizerPath ){
 							Prompt( "loading finalizer", finalizerPath );
 
@@ -1331,9 +1367,7 @@ const upsurge = function upsurge( option ){
 								Prompt( "finalizer", finalizerPath, "loaded" );
 							}
 						} )
-						.filter( function onEachFinalizer( finalizer ){
-							return !!finalizer;
-						} ),
+						.filter( truly ),
 
 						function lastly( ){
 							Prompt( "finished loading finalizer" );
@@ -1382,8 +1416,7 @@ const upsurge = function upsurge( option ){
 			}
 
 			if( issue ){
-				issue
-					.remind( "failed loading application" )
+				issue.remind( "failed loading application" )
 					.remind( "process exiting" )
 					.silence( )
 					.prompt( );
@@ -1394,7 +1427,7 @@ const upsurge = function upsurge( option ){
 				let port = server.port || rootServer.port;
 
 				Prompt( "finished loading application" )
-					.remind( "use", protocol + "://" + domain + ":" + port )
+					.remind( `use ${ protocol }://${ domain }:${ port }` )
 					.remind( "application is now live" );
 			}
 		} );
