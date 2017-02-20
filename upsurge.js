@@ -138,6 +138,7 @@ const mongoose = require( "mongoose" );
 const offcache = require( "offcache" );
 const pedon = require( "pedon" );
 const protype = require( "protype" );
+const redupe = require( "redupe" );
 const ribosome = require( "ribosome" );
 const series = require( "async" ).series;
 const session = require( "express-session" );
@@ -279,10 +280,10 @@ const upsurge = function upsurge( option ){
 			option.choice = truu( option.choice )? option.choice : { };
 
 			glob( [
-					"!server/meta/option.json",
 					"server/local/option.json",
 					"server/**/option.json",
 					"server/**/*-option.json"
+					"!server/meta/option.json",
 
 				].map( function onEachPattern( pattern ){
 					if( truly( service ) ){
@@ -363,10 +364,10 @@ const upsurge = function upsurge( option ){
 			option.constant = truu( option.constant )? option.constant : { };
 
 			glob( [
-					"!server/meta/constant.json",
 					"server/local/constant.json",
 					"server/**/constant.json",
 					"server/**/-constant.json"
+					"!server/meta/constant.json",
 
 				].map( function onEachPattern( pattern ){
 					if( truly( service ) ){
@@ -484,15 +485,15 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading database" );
 
-			let option = _.cloneDeep( OPTION.environment.database );
+			let databaseOption = redupe( OPTION.environment.database );
 			if( truly( service ) &&
 				truu( OPTION.environment[ service ] ) &&
 				truu( OPTION.environment[ service ].database ) )
 			{
-				option = _.cloneDeep( OPTION.environment[ service ].database );
+				databaseOption = redupe( OPTION.environment[ service ].database );
 			}
 
-			let database = _.keys( option );
+			let database = Object.keys( databaseOption );
 
 			series( [
 				function createDatabaseDirectory( callback ){
@@ -511,14 +512,14 @@ const upsurge = function upsurge( option ){
 					try{
 						_.each( database,
 							function onEachDatabase( database ){
-								if( option[ database ].url ){
+								if( databaseOption[ database ].url ){
 									return;
 								}
 
 								let databaseDirectoryName = "." + database + "-database";
 								let directory = path.resolve( rootPath, databaseDirectoryName );
 
-								option[ database ].directory = directory;
+								databaseOption[ database ].directory = directory;
 
 								if( !kept( directory, true ) ){
 									Prompt( "creating database directory", directory );
@@ -555,27 +556,26 @@ const upsurge = function upsurge( option ){
 					Prompt( "creating database log" );
 
 					try{
-						_.each( database,
-							function onEachDatabase( database ){
-								if( option[ database ].url ){
-									return;
-								}
+						database.forEach( function onEachDatabase( database ){
+							if( databaseOption[ database ].url ){
+								return;
+							}
 
-								let logFile = path.resolve( option[ database ].directory, "database.log" );
+							let logFile = path.resolve( databaseOption[ database ].directory, "database.log" );
 
-								option[ database ].log = logFile;
+							databaseOption[ database ].log = logFile;
 
-								if( !kept( logFile, true ) ){
-									Prompt( "creating database log", logFile );
+							if( !kept( logFile, true ) ){
+								Prompt( "creating database log", logFile );
 
-									fs.closeSync( fs.openSync( logFile, "w" ) );
+								fs.closeSync( fs.openSync( logFile, "w" ) );
 
-									Prompt( "database log", logFile, "created" );
+								Prompt( "database log", logFile, "created" );
 
-								}else{
-									Prompt( "database log", logFile, "ready" );
-								}
-							} );
+							}else{
+								Prompt( "database log", logFile, "ready" );
+							}
+						} );
 
 						Prompt( "finished creating database log" );
 
@@ -600,90 +600,89 @@ const upsurge = function upsurge( option ){
 					Prompt( "initializing database process" );
 
 					try{
-						_.each( database,
-							function onEachDatabase( database ){
-								if( option[ database ].url ){
-									return;
-								}
+						database.forEach( function onEachDatabase( database ){
+							if( databaseOption[ database ].url ){
+								return;
+							}
 
-								let mongoProcess = child.execSync( [
-									"ps aux",
-									"grep mongod",
-									"grep " + database
-								].join( " | " ) ).toString( );
+							let mongoProcess = child.execSync( [
+								"ps aux",
+								"grep mongod",
+								"grep " + database
+							].join( " | " ) ).toString( );
 
-								let mongodbVersion = option[ database ].version ||
-									child.execSync( "m --stable" )
-										.toString( )
-										.replace( /\s/g, "" );
-
-								let mongodbPath = child.execSync( "m bin @version"
-									.replace( "@version", mongodbVersion ) )
+							let mongodbVersion = databaseOption[ database ].version ||
+								child.execSync( "m --stable" )
 									.toString( )
 									.replace( /\s/g, "" );
 
-								let choice = option[ database ];
+							let mongodbPath = child.execSync( "m bin @version"
+								.replace( "@version", mongodbVersion ) )
+								.toString( )
+								.replace( /\s/g, "" );
 
-								if( ( new RegExp( database ) ).test( mongoProcess ) &&
-									( /mongod \-\-fork/ ).test( mongoProcess ) )
-								{
-									Prompt( "database process", database, "is already running" );
+							let choice = databaseOption[ database ];
 
-									Prompt( "stopping database", database, "process" );
+							if( ( new RegExp( database ) ).test( mongoProcess ) &&
+								( /mongod \-\-fork/ ).test( mongoProcess ) )
+							{
+								Prompt( "database process", database, "is already running" );
 
-									try{
-										child.execSync( [
-											path.resolve( mongodbPath, "mongo" ),
-												"--port", choice.port,
-												"--eval",
-												`'db.getSiblingDB( "admin" ).shutdownServer( )'`
-										].join( " " ) );
+								Prompt( "stopping database", database, "process" );
 
-									}catch( error ){
-										Warning( "cannot stop database process that is dead" )
-											.silence( )
-											.prompt( );
-									}
+								try{
+									child.execSync( [
+										path.resolve( mongodbPath, "mongo" ),
+											"--port", choice.port,
+											"--eval",
+											`'db.getSiblingDB( "admin" ).shutdownServer( )'`
+									].join( " " ) );
 
-									try{
-										child.execSync( [
-											"rm -fv",
-											path.resolve( choice.directory, "mongod.lock" )
-										].join( " " ) );
-
-									}catch( error ){
-										Warning( "cannot remove mongod.lock file", error )
-											.remind( "file does not exists" )
-											.silence( )
-											.prompt( );
-									}
+								}catch( error ){
+									Warning( "cannot stop database process that is dead" )
+										.silence( )
+										.prompt( );
 								}
 
-								Prompt( "starting database process", database );
+								try{
+									child.execSync( [
+										"rm -fv",
+										path.resolve( choice.directory, "mongod.lock" )
+									].join( " " ) );
 
-								let command = [
-									path.resolve( mongodbPath, "mongod" ),
-										"--fork",
-										"--logpath", choice.log,
-										"--port", choice.port,
-										"--bind_ip", choice.host,
-										"--dbpath", choice.directory,
-										"--smallfiles",
-										"&>", choice.log,
-										"&"
-								].join( " " );
+								}catch( error ){
+									Warning( "cannot remove mongod.lock file", error )
+										.remind( "file does not exists" )
+										.silence( )
+										.prompt( );
+								}
+							}
 
-								child.execSync( command );
+							Prompt( "starting database process", database );
 
-								choice.url = [
-									"mongodb:/",
-									choice.host + ":" + choice.port,
-									database
-								].join( "/" );
+							let command = [
+								path.resolve( mongodbPath, "mongod" ),
+									"--fork",
+									"--logpath", choice.log,
+									"--port", choice.port,
+									"--bind_ip", choice.host,
+									"--dbpath", choice.directory,
+									"--smallfiles",
+									"&>", choice.log,
+									"&"
+							].join( " " );
 
-								Prompt( "database", database, "started" )
-									.remind( "using connection", choice.url );
-							} );
+							child.execSync( command );
+
+							choice.url = [
+								"mongodb:/",
+								choice.host + ":" + choice.port,
+								database
+							].join( "/" );
+
+							Prompt( "database", database, "started" )
+								.remind( "using connection", choice.url );
+						} );
 
 						Prompt( "finished initializing database process" );
 
@@ -696,38 +695,37 @@ const upsurge = function upsurge( option ){
 				},
 
 				function createDatabaseConnection( callback ){
-					let completed = _.every( database,
-						function onEachDatabase( database ){
-							if( falze( option[ database ] ) ){
-								Warning( "cannot create database connection", database )
-									.remind( "empty database data", option[ database ] )
-									.silence( )
-									.prompt( );
+					let completed = database.every( function onEachDatabase( database ){
+						if( falze( databaseOption[ database ] ) ){
+							Warning( "cannot create database connection", database )
+								.remind( "empty database data", databaseOption[ database ] )
+								.silence( )
+								.prompt( );
 
-								return false;
-							}
+							return false;
+						}
 
-							if( falzy( option[ database ].url ) ){
-								Warning( "cannot create database connection", database )
-									.remind( "due to incomplete data", option[ database ] )
-									.silence( )
-									.prompt( );
+						if( falzy( databaseOption[ database ].url ) ){
+							Warning( "cannot create database connection", database )
+								.remind( "due to incomplete data", databaseOption[ database ] )
+								.silence( )
+								.prompt( );
 
-								return false;
-							}
+							return false;
+						}
 
-							harden( cobralize( database ),
-								mongoose.createConnection( option[ database ].url, {
-									"server": {
-										"poolSize": option[ database ].poolSize || 10,
-										"socketOptions": {
-											"keepAlive": option[ database ].keepAlive || 500
-										}
+						harden( cobralize( database ),
+							mongoose.createConnection( databaseOption[ database ].url, {
+								"server": {
+									"poolSize": databaseOption[ database ].poolSize || 10,
+									"socketOptions": {
+										"keepAlive": databaseOption[ database ].keepAlive || 500
 									}
-								} ) );
+								}
+							} ) );
 
-							return true;
-						} );
+						return true;
+					} );
 
 					if( !completed ){
 						Issue( "creating database connection not completed" )
@@ -972,9 +970,7 @@ const upsurge = function upsurge( option ){
 					.prompt( );
 			}
 
-			let sessionOption = truly( service )?
-				serviceServerOption.session :
-				serverOption.session;
+			let sessionOption = truly( service )? serviceServerOption.session : serverOption.session;
 			if( truu( sessionOption ) ){
 				//: This is the default session store.
 				harden( "SESSION_STORE", { } );
@@ -1031,9 +1027,7 @@ const upsurge = function upsurge( option ){
 			*/
 			let clientOption = OPTION.environment.client;
 			if( truly( service ) ){
-				clientOption = _.defaultsDeep
-					( _.cloneDeep( OPTION.environment[ service ].client || { } ),
-						_.cloneDeep( OPTION.environment.client ) );
+				clientOption = redupe( OPTION.environment[ service ].client || { }, clientOption, true );
 			}
 			if( truu( clientOption ) ){
 				let environment = ribosome( function template( ){
