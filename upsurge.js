@@ -56,7 +56,6 @@
 
 	@include:
 		{
-			"_": "lodash",
 			"async": "async",
 			"ate": "ate",
 			"bodyParser": "body-parser",
@@ -71,8 +70,10 @@
 			"dexer": "dexer",
 			"dexist": "dexist",
 			"dictate": "dictate",
+			"empt": "empt",
 			"falze": "falze",
 			"falzy": "falzy",
+			"filled": "filled",
 			"fs": "fs-extra",
 			"harden": "harden",
 			"helmet": "helmet",
@@ -89,14 +90,18 @@
 			"offcache": "offcache",
 			"Olivant": "olivant",
 			"pedon": "pedon",
+			"redupe": "redupe",
 			"ribosome": "ribosome",
 			"ssbolt": "ssbolt",
-			"session": "express-session",
+			"session": "express-session",,
+			"stuffed": "stuffed",
+			"touche": "touche",
 			"truly": "truly",
 			"truu": "truu",
 			"path": "path",
 			"util": "util",
 			"veur": "veur",
+			"wichevr": "wichevr",
 			"yargs": "yargs"
 		}
 	@end-include
@@ -104,8 +109,9 @@
 
 require( "olivant" );
 
-const _ = require( "lodash" );
 const ate = require( "ate" );
+const blacksea = require( "blacksea" );
+const bluesea = require( "bluesea" );
 const bodyParser = require( "body-parser" );
 const called = require( "called" );
 const cheson = require( "cheson" );
@@ -118,9 +124,11 @@ const csrf = require( "csurf" );
 const dexer = require( "dexer" );
 const dexist = require( "dexist" );
 const dictate = require( "dictate" );
+const empt = require( "empt" );
 const express = require( "express" );
 const falze = require( "falze" );
 const falzy = require( "falzy" );
+const filled = require( "filled" );
 const fs = require( "fs-extra" );
 const glob = require( "globby" );
 const harden = require( "harden" );
@@ -138,20 +146,71 @@ const mongoose = require( "mongoose" );
 const offcache = require( "offcache" );
 const pedon = require( "pedon" );
 const protype = require( "protype" );
+const redsea = require( "redsea" );
+const redupe = require( "redupe" );
 const ribosome = require( "ribosome" );
 const series = require( "async" ).series;
 const session = require( "express-session" );
 const ssbolt = require( "ssbolt" );
+const stuffed = require( "stuffed" );
+const touche = require( "touche" );
 const truly = require( "truly" );
 const truu = require( "truu" );
 const path = require( "path" );
 const util = require( "util" );
 const veur = require( "veur" );
+const wichevr = require( "wichevr" );
 const yarg = require( "yargs" );
 
 const DEFAULT_DATABASE_POOLSIZE = 10;
 const DEFAULT_DATABASE_KEEPALIVE = 500;
 const DEFAULT_BODY_PARSER_LIMIT = "50mb";
+const DEFAULT_PROTOCOL = "http";
+const DEFAULT_DOMAIN = "localhost";
+const DEFAULT_HOST = "127.0.0.1";
+const DEFAULT_PORT = 8000;
+
+/*;
+	@internal-method-documentation:
+		This will replace filepaths with service namespace.
+	@end-internal-method-documentation
+*/
+const overrideService = function overrideService( service ){
+	/*;
+		@meta-configuration:
+			{
+				"service": "string"
+			}
+		@end-meta-configuration
+	*/
+
+	let activeService = truly( service );
+
+	if( activeService && !protype( service, STRING ) ){
+		throw new Error( "invalid service name" );
+	}
+
+	return function resolveService( filePath ){
+		/*;
+			@meta-configuration:
+				{
+					"filePath:required": "string"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( filePath ) ){
+			throw new Error( "invalid file path" )
+		}
+
+		if( activeService && ( /^\!/ ).test( filePath ) ){
+			return filePath.replace( "**", service );
+
+		}else{
+			return filePath;
+		}
+	};
+};
 
 /*;
 	@option:
@@ -176,17 +235,17 @@ const upsurge = function upsurge( option ){
 		@end-meta-configuration
 	*/
 
-	option = truu( option )? option : { };
+	option = wichevr( option, { } );
 
-	option.rootPath = option.rootPath || process.cwd( );
-
-	let rootPath = option.rootPath;
+	let rootPath = option.rootPath = wichevr( option.rootPath, process.cwd( ) );
 
 	//: These are any procedures that modify the flow of the upsurge.
-	option.injective = truu( option.injective )? option.injective : { };
+	option.injective = wichevr( option.injective, { } );
 
 	let parameter = yarg.argv;
-	let service = parameter.service || option.service;
+	let service = wichevr( parameter.service, option.service );
+
+	let resolveService = overrideService( service );
 
 	let flow = [
 		function killExistingProcess( callback ){
@@ -204,20 +263,12 @@ const upsurge = function upsurge( option ){
 		function loadInitialize( callback ){
 			Prompt( "loading initialize" );
 
-			option.initialize = truu( option.initialize )? option.initialize : { };
+			option.initialize = wichevr( option.initialize, { } );
 
 			glob( [
 					"server/**/initialize.js",
 					"server/**/*-initialize.js"
-
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				],
 
 				{ "cwd": rootPath } )
 
@@ -253,7 +304,12 @@ const upsurge = function upsurge( option ){
 						.filter( truly ),
 
 						function lastly( ){
-							Prompt( "finished loading initialize" );
+							if( filled( initializeList ) ){
+								Prompt( "finished loading initialize" );
+
+							}else{
+								Prompt( "no initialize loaded" );
+							}
 
 							callback( );
 						} );
@@ -276,22 +332,15 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading option" );
 
-			option.choice = truu( option.choice )? option.choice : { };
+			option.choice = wichevr( option.choice, { } );
 
 			glob( [
-					"!server/meta/option.json",
 					"server/local/option.json",
 					"server/**/option.json",
-					"server/**/*-option.json"
+					"server/**/*-option.json",
+					"!server/meta/option.json"
 
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				].map( resolveService ),
 
 				{ "cwd": rootPath } )
 
@@ -319,26 +368,31 @@ const upsurge = function upsurge( option ){
 
 							let option = require( optionPath );
 
-							OPTION = _( _.cloneDeep( OPTION ) )
-								.extend( _.cloneDeep( option ) )
-								.value( );
+							OPTION = redupe( OPTION, require( optionPath ), true );
 
 							Prompt( "option", optionPath, "loaded" );
 						} );
 
-					if( parameter.production ){
-						OPTION.environment = truu( OPTION.production )? OPTION.production : { };
+					if( stuffed( OPTION ) ){
+						if( parameter.production ){
+							OPTION.environment = wichevr( OPTION.production, { } );
 
-					}else if( parameter.staging ){
-						OPTION.environment = truu( OPTION.staging )? OPTION.staging : { };
+						}else if( parameter.staging ){
+							OPTION.environment = wichevr( OPTION.staging, { } );
 
-					}else{
-						OPTION.environment = truu( OPTION.local )? OPTION.local : { };
+						}else{
+							OPTION.environment = wichevr( OPTION.local, { } );
+						}
 					}
 
 					harden( "OPTION", OPTION );
 
-					Prompt( "finished loading option" );
+					if( empt( OPTION ) ){
+						Prompt( "finished loading option" );
+
+					}else{
+						Prompt( "no option loaded" );
+					}
 
 					callback( );
 				} )
@@ -360,22 +414,15 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading constant" );
 
-			option.constant = truu( option.constant )? option.constant : { };
+			option.constant = wichevr( option.constant, { } );
 
 			glob( [
-					"!server/meta/constant.json",
 					"server/local/constant.json",
 					"server/**/constant.json",
-					"server/**/-constant.json"
+					"server/**/-constant.json",
+					"!server/meta/constant.json"
 
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				].map( resolveService ),
 
 				{ "cwd": rootPath } )
 
@@ -408,7 +455,13 @@ const upsurge = function upsurge( option ){
 							Prompt( "constant", constantPath, "loaded" );
 						} );
 
-					Prompt( "finished loading constant" );
+
+					if( filled( constantList ) ){
+						Prompt( "finished loading constant" );
+
+					}else{
+						Prompt( "no constant loaded" );
+					}
 
 					callback( );
 				} )
@@ -458,7 +511,12 @@ const upsurge = function upsurge( option ){
 							Prompt( "utility", utilityPath, "loaded" );
 						} );
 
-					Prompt( "finished loading utility" );
+					if( filled( utilityList ) ){
+						Prompt( "finished loading utility" );
+
+					}else{
+						Prompt( "no utility loaded" );
+					}
 
 					callback( );
 				} )
@@ -470,6 +528,17 @@ const upsurge = function upsurge( option ){
 		},
 
 		function loadDatabase( callback ){
+			if( empt( OPTION ) ){
+				Warning( "empty configuration" )
+					.remind( "cannot load database" )
+					.prompt( )
+					.silence( );
+
+				callback( );
+
+				return;
+			}
+
 			if( truly( service ) &&
 				( falze( OPTION.environment[ service ] ) ||
 				falze( OPTION.environment[ service ].database ) ) )
@@ -484,15 +553,15 @@ const upsurge = function upsurge( option ){
 
 			Prompt( "loading database" );
 
-			let option = _.cloneDeep( OPTION.environment.database );
+			let databaseOption = redupe( OPTION.environment.database );
 			if( truly( service ) &&
 				truu( OPTION.environment[ service ] ) &&
 				truu( OPTION.environment[ service ].database ) )
 			{
-				option = _.cloneDeep( OPTION.environment[ service ].database );
+				databaseOption = redupe( OPTION.environment[ service ].database );
 			}
 
-			let database = _.keys( option );
+			let database = Object.keys( databaseOption );
 
 			series( [
 				function createDatabaseDirectory( callback ){
@@ -509,28 +578,27 @@ const upsurge = function upsurge( option ){
 					Prompt( "creating database directory" );
 
 					try{
-						_.each( database,
-							function onEachDatabase( database ){
-								if( option[ database ].url ){
-									return;
-								}
+						database.forEach( function onEachDatabase( database ){
+							if( databaseOption[ database ].url ){
+								return;
+							}
 
-								let databaseDirectoryName = "." + database + "-database";
-								let directory = path.resolve( rootPath, databaseDirectoryName );
+							let databaseDirectoryName = "." + database + "-database";
+							let directory = path.resolve( rootPath, databaseDirectoryName );
 
-								option[ database ].directory = directory;
+							databaseOption[ database ].directory = directory;
 
-								if( !kept( directory, true ) ){
-									Prompt( "creating database directory", directory );
+							if( !kept( directory, true ) ){
+								Prompt( "creating database directory", directory );
 
-									fs.mkdirSync( directory );
+								fs.mkdirSync( directory );
 
-									Prompt( "database directory", directory, "created" )
+								Prompt( "database directory", directory, "created" )
 
-								}else{
-									Prompt( "database directory", directory, "ready" );
-								}
-							} );
+							}else{
+								Prompt( "database directory", directory, "ready" );
+							}
+						} );
 
 						Prompt( "finished creating database directory" );
 
@@ -555,27 +623,28 @@ const upsurge = function upsurge( option ){
 					Prompt( "creating database log" );
 
 					try{
-						_.each( database,
-							function onEachDatabase( database ){
-								if( option[ database ].url ){
-									return;
-								}
+						database.forEach( function onEachDatabase( database ){
+							let option = databaseOption[ database ];
 
-								let logFile = path.resolve( option[ database ].directory, "database.log" );
+							if( option.url ){
+								return;
+							}
 
-								option[ database ].log = logFile;
+							let logFile = path.resolve( option.directory, "database.log" );
 
-								if( !kept( logFile, true ) ){
-									Prompt( "creating database log", logFile );
+							option.log = logFile;
 
-									fs.closeSync( fs.openSync( logFile, "w" ) );
+							if( !kept( logFile, true ) ){
+								Prompt( "creating database log", logFile );
 
-									Prompt( "database log", logFile, "created" );
+								touche( logFile, true );
 
-								}else{
-									Prompt( "database log", logFile, "ready" );
-								}
-							} );
+								Prompt( "database log", logFile, "created" );
+
+							}else{
+								Prompt( "database log", logFile, "ready" );
+							}
+						} );
 
 						Prompt( "finished creating database log" );
 
@@ -600,90 +669,91 @@ const upsurge = function upsurge( option ){
 					Prompt( "initializing database process" );
 
 					try{
-						_.each( database,
-							function onEachDatabase( database ){
-								if( option[ database ].url ){
-									return;
-								}
+						database.forEach( function onEachDatabase( database ){
+							if( databaseOption[ database ].url ){
+								return;
+							}
 
-								let mongoProcess = child.execSync( [
-									"ps aux",
-									"grep mongod",
-									"grep " + database
-								].join( " | " ) ).toString( );
+							let mongoProcess = child.execSync( [
+								"ps aux",
+								"grep mongod",
+								"grep " + database
+							].join( " | " ) ).toString( );
 
-								let mongodbVersion = option[ database ].version ||
-									child.execSync( "m --stable" )
-										.toString( )
-										.replace( /\s/g, "" );
-
-								let mongodbPath = child.execSync( "m bin @version"
-									.replace( "@version", mongodbVersion ) )
+							let mongodbVersion = databaseOption[ database ].version ||
+								child.execSync( "m --stable" )
 									.toString( )
 									.replace( /\s/g, "" );
 
-								let choice = option[ database ];
+							let mongodbPath = child.execSync( "m bin @version"
+								.replace( "@version", mongodbVersion ) )
+								.toString( )
+								.replace( /\s/g, "" );
 
-								if( ( new RegExp( database ) ).test( mongoProcess ) &&
-									( /mongod \-\-fork/ ).test( mongoProcess ) )
-								{
-									Prompt( "database process", database, "is already running" );
+							let choice = databaseOption[ database ];
 
-									Prompt( "stopping database", database, "process" );
+							if( ( new RegExp( database ) ).test( mongoProcess ) &&
+								( /mongod \-\-fork/ ).test( mongoProcess ) )
+							{
+								Prompt( "database process", database, "is already running" );
 
-									try{
-										child.execSync( [
-											path.resolve( mongodbPath, "mongo" ),
-												"--port", choice.port,
-												"--eval",
-												`'db.getSiblingDB( "admin" ).shutdownServer( )'`
-										].join( " " ) );
+								Prompt( "stopping database", database, "process" );
 
-									}catch( error ){
-										Warning( "cannot stop database process that is dead" )
-											.silence( )
-											.prompt( );
-									}
+								try{
+									child.execSync( [
+										path.resolve( mongodbPath, "mongo" ),
+											"--port", choice.port,
+											"--eval",
+											`'db.getSiblingDB( "admin" ).shutdownServer( )'`
+									].join( " " ) );
 
-									try{
-										child.execSync( [
-											"rm -fv",
-											path.resolve( choice.directory, "mongod.lock" )
-										].join( " " ) );
 
-									}catch( error ){
-										Warning( "cannot remove mongod.lock file", error )
-											.remind( "file does not exists" )
-											.silence( )
-											.prompt( );
-									}
+
+								}catch( error ){
+									Warning( "cannot stop database process that is dead" )
+										.silence( )
+										.prompt( );
 								}
 
-								Prompt( "starting database process", database );
+								try{
+									child.execSync( [
+										"rm -fv",
+										path.resolve( choice.directory, "mongod.lock" )
+									].join( " " ) );
 
-								let command = [
-									path.resolve( mongodbPath, "mongod" ),
-										"--fork",
-										"--logpath", choice.log,
-										"--port", choice.port,
-										"--bind_ip", choice.host,
-										"--dbpath", choice.directory,
-										"--smallfiles",
-										"&>", choice.log,
-										"&"
-								].join( " " );
+								}catch( error ){
+									Warning( "cannot remove mongod.lock file", error )
+										.remind( "file does not exists" )
+										.silence( )
+										.prompt( );
+								}
+							}
 
-								child.execSync( command );
+							Prompt( "starting database process", database );
 
-								choice.url = [
-									"mongodb:/",
-									choice.host + ":" + choice.port,
-									database
-								].join( "/" );
+							let command = [
+								path.resolve( mongodbPath, "mongod" ),
+									"--fork",
+									"--logpath", choice.log,
+									"--port", choice.port,
+									"--bind_ip", choice.host,
+									"--dbpath", choice.directory,
+									"--smallfiles",
+									"&>", choice.log,
+									"&"
+							].join( " " );
 
-								Prompt( "database", database, "started" )
-									.remind( "using connection", choice.url );
-							} );
+							child.execSync( command );
+
+							choice.url = [
+								"mongodb:/",
+								choice.host + ":" + choice.port,
+								database
+							].join( "/" );
+
+							Prompt( "database", database, "started" )
+								.remind( "using connection", choice.url );
+						} );
 
 						Prompt( "finished initializing database process" );
 
@@ -696,38 +766,39 @@ const upsurge = function upsurge( option ){
 				},
 
 				function createDatabaseConnection( callback ){
-					let completed = _.every( database,
-						function onEachDatabase( database ){
-							if( falze( option[ database ] ) ){
-								Warning( "cannot create database connection", database )
-									.remind( "empty database data", option[ database ] )
-									.silence( )
-									.prompt( );
+					let completed = database.every( function onEachDatabase( database ){
+						let option = databaseOption[ database ];
 
-								return false;
-							}
+						if( falze( option ) ){
+							Warning( "cannot create database connection", database )
+								.remind( "empty database data", option )
+								.silence( )
+								.prompt( );
 
-							if( falzy( option[ database ].url ) ){
-								Warning( "cannot create database connection", database )
-									.remind( "due to incomplete data", option[ database ] )
-									.silence( )
-									.prompt( );
+							return false;
+						}
 
-								return false;
-							}
+						if( falzy( option.url ) ){
+							Warning( "cannot create database connection", database )
+								.remind( "due to incomplete data", option )
+								.silence( )
+								.prompt( );
 
-							harden( cobralize( database ),
-								mongoose.createConnection( option[ database ].url, {
-									"server": {
-										"poolSize": option[ database ].poolSize || 10,
-										"socketOptions": {
-											"keepAlive": option[ database ].keepAlive || 500
-										}
+							return false;
+						}
+
+						harden( cobralize( database ),
+							mongoose.createConnection( option.url, {
+								"server": {
+									"poolSize": wichevr( option.poolSize, DEFAULT_DATABASE_POOLSIZE ),
+									"socketOptions": {
+										"keepAlive": wichevr( option.keepAlive, DEFAULT_DATABASE_KEEPALIVE )
 									}
-								} ) );
+								}
+							} ) );
 
-							return true;
-						} );
+						return true;
+					} );
 
 					if( !completed ){
 						Issue( "creating database connection not completed" )
@@ -757,15 +828,7 @@ const upsurge = function upsurge( option ){
 			glob( [
 					"server/**/model.js",
 					"server/**/*-model.js"
-
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				],
 
 				{ "cwd": rootPath } )
 
@@ -794,7 +857,12 @@ const upsurge = function upsurge( option ){
 							Prompt( "model", modelPath, "loaded" );
 						} );
 
-					Prompt( "finished loading model" );
+					if( filled( modelList ) ){
+						Prompt( "finished loading model" );
+
+					}else{
+						Prompt( "no model loaded" );
+					}
 
 					callback( );
 				} )
@@ -808,20 +876,12 @@ const upsurge = function upsurge( option ){
 		function loadEngine( callback ){
 			Prompt( "loading engine" );
 
-			option.engine = truu( option.engine )? option.engine : { };
+			option.engine = wichevr( option.engine, { } );
 
 			glob( [
 					"server/**/engine.js",
 					"server/**/*-engine.js"
-
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				],
 
 				{ "cwd": rootPath } )
 
@@ -850,7 +910,12 @@ const upsurge = function upsurge( option ){
 							Prompt( "engine", enginePath, "loaded" );
 						} );
 
-					Prompt( "finished loading engine" );
+					if( filled( engineList ) ){
+						Prompt( "finished loading engine" );
+
+					}else{
+						Prompt( "no engine loaded" );
+					}
 
 					callback( );
 				} )
@@ -864,20 +929,13 @@ const upsurge = function upsurge( option ){
 		function loadDefault( callback ){
 			Prompt( "loading default" );
 
-			option.default = truu( option.default )? option.default : { };
+			option.default = wichevr( option.default, { } );
 
 			glob( [
 					"server/**/default.js",
 					"server/**/*-default.js"
 
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				].map( resolveService ),
 
 				{ "cwd": rootPath } )
 
@@ -905,7 +963,12 @@ const upsurge = function upsurge( option ){
 							} ),
 
 						function lastly( ){
-							Prompt( "finished loading all default" );
+							if( filled( defaultList ) ){
+								Prompt( "finished loading all default" );
+
+							}else{
+								Prompt( "no default loaded" );
+							}
 
 							callback( );
 						} );
@@ -926,21 +989,22 @@ const upsurge = function upsurge( option ){
 			/*;
 				This will let us bind csrf middleware anywhere in the api.
 			*/
-			harden( "CSRF", csrf( { "cookie": true } ) );
+			harden( "CSRF", csrf( ) );
 
-			let serverOption = OPTION.environment.server;
-			let serviceServerOption = null;
+			let environment = wichevr( OPTION.environment, { } );
+
+			let serverOption = wichevr( environment.server, { } );
+			let serviceOption = { };
 			if( truly( service ) ){
-				serviceServerOption = OPTION.environment[ service ].server;
+				serviceOption = environment[ service ].server;
 			}
 
-			let bodyOption = truly( service )? serviceServerOption.body : serverOption.body;
+			let bodyOption = truly( service )? serviceOption.body : serverOption.body;
 			if( truu( bodyOption ) ){
-				let limit = ( truu( bodyOption.parser ) && bodyOption.parser.limit ) ||
-					DEFAULT_BODY_PARSER_LIMIT;
+				let limit = ( truu( bodyOption.parser ) && bodyOption.parser.limit ) || DEFAULT_BODY_PARSER_LIMIT;
 
 				APP.use( bodyParser.urlencoded( {
-					"extended": true,
+					"extended": false,
 					"limit": limit
 				} ) );
 
@@ -958,9 +1022,7 @@ const upsurge = function upsurge( option ){
 
 			APP.use( methodOverride( ) );
 
-			let compressionOption = truly( service )?
-				serviceServerOption.compression :
-				serverOption.compression;
+			let compressionOption = truly( service )? serviceOption.compression : serverOption.compression;
 			if( truu( compressionOption ) ){
 				APP.use( compression( {
 					"level": compressionOption.level
@@ -972,9 +1034,7 @@ const upsurge = function upsurge( option ){
 					.prompt( );
 			}
 
-			let sessionOption = truly( service )?
-				serviceServerOption.session :
-				serverOption.session;
+			let sessionOption = truly( service )? serviceOption.session : serverOption.session;
 			if( truu( sessionOption ) ){
 				//: This is the default session store.
 				harden( "SESSION_STORE", { } );
@@ -1029,11 +1089,10 @@ const upsurge = function upsurge( option ){
 
 				Modify client variables in option.client property.
 			*/
-			let clientOption = OPTION.environment.client;
-			if( truly( service ) ){
-				clientOption = _.defaultsDeep
-					( _.cloneDeep( OPTION.environment[ service ].client || { } ),
-						_.cloneDeep( OPTION.environment.client ) );
+			let clientOption = wichevr( environment.client, { } );
+			if( truly( service ) && truly( environment[ service ] ) ){
+				let option = environment[ service ];
+				clientOption = redupe( wichevr( option.client, { } ), clientOption, true );
 			}
 			if( truu( clientOption ) ){
 				let environment = ribosome( function template( ){
@@ -1059,7 +1118,7 @@ const upsurge = function upsurge( option ){
 
 				APP.get( "/environment",
 					function onGetEnvironment( request, response ){
-						let done = request.query.callback || "callback";
+						let done = wichevr( request.query.callback, "callback" );
 
 						if( !( /^\w+$/ ).test( done.toString( ) ) ){
 							Issue( "invalid callback", done )
@@ -1106,18 +1165,23 @@ const upsurge = function upsurge( option ){
 							} )
 							.send( new Buffer( field ) );
 					} );
+			}else{
+				Prompt( "environment service not loaded" );
 			}
 
 			//: Load dependency middleware if activated through options.
-			let dependency = OPTION.environment.dependency;
+			let dependency = wichevr( environment.dependency, { } );
 			if( truly( service ) &&
-				truu( OPTION.environment[ service ] ) &&
-				truu( OPTION.environment[ service ].dependency ) )
+				truu( environment[ service ] ) &&
+				truu( environment[ service ].dependency ) )
 			{
-				dependency = OPTION.environment[ service ].dependency
+				dependency = environment[ service ].dependency
 			}
 			if( truu( dependency ) ){
 				kirov( dependency );
+
+			}else{
+				Prompt( "dependency service not loaded" );
 			}
 
 			//: Configure default redirect path.
@@ -1133,27 +1197,27 @@ const upsurge = function upsurge( option ){
 
 			let pathList = [ ];
 			if( truly( service ) &&
-				truu( OPTION.environment[ service ] ) &&
-				truu( OPTION.environment[ service ].static ) &&
-				truly( OPTION.environment[ service ].static.path ) )
+				truu( environment[ service ] ) &&
+				truu( environment[ service ].static ) &&
+				truly( environment[ service ].static.path ) )
 			{
-				pathList = OPTION.environment[ service ].static.path;
+				pathList = environment[ service ].static.path;
 
-			}else if( truu( OPTION.environment.static ) &&
-				truly( OPTION.environment.static.path ) )
+			}else if( truu( environment.static ) &&
+				truly( environment.static.path ) )
 			{
-				pathList = OPTION.environment.static.path;
+				pathList = environment.static.path;
 			}
 			for( let track in pathList ){
 				let pathOption = pathList[ track ];
 
 				if( track === "/" ){
-					let data = truu( pathOption.data )? pathOption.data : clientOption;
-					let redirect = truly( pathOption.redirect )? pathOption.redirect : DEFAULT_REDIRECT_PATH
+					let data = wichevr( pathOption.data, clientOption );
+					let redirect = wichevr( pathOption.redirect, DEFAULT_REDIRECT_PATH );
 
 					dexer( {
 						"middleware": APP,
-						"rootPath": truly( pathOption.rootPath )? pathOption.rootPath : rootPath,
+						"rootPath": wichevr( pathOption.rootPath, rootPath ),
 						"clientPath": pathOption.clientPath,
 						"indexPath": pathOption.indexPath,
 						"index": pathOption.index,
@@ -1162,12 +1226,12 @@ const upsurge = function upsurge( option ){
 					} );
 
 				}else if( ( /^\/view/ ).test( track ) ){
-					let data = truu( pathOption.data )? pathOption.data : clientOption;
-					let redirect = truly( pathOption.redirect )? pathOption.redirect : DEFAULT_REDIRECT_PATH
+					let data = wichevr( pathOption.data, clientOption );
+					let redirect = wichevr( pathOption.redirect, DEFAULT_REDIRECT_PATH );
 
 					veur( {
 						"middleware": APP,
-						"rootPath": truly( pathOption.rootPath )? pathOption.rootPath : rootPath,
+						"rootPath": wichevr( pathOption.rootPath, rootPath ),
 						"clientPath": pathOption.clientPath,
 						"viewPath": pathOption.viewPath,
 						"view": pathOption.view,
@@ -1183,11 +1247,11 @@ const upsurge = function upsurge( option ){
 				}
 			}
 
-			let port = serverOption.port;
-			let host = serverOption.host;
+			let port = wichevr( serverOption.port, DEFAULT_PORT );
+			let host = wichevr( serverOption.host, DEFAULT_HOST );
 			if( truly( service ) ){
-				port = serviceServerOption.port || port;
-				host = serviceServerOption.host || host;
+				port = wichevr( serviceOption.port, port );
+				host = wichevr( serviceOption.host, host );
 			}
 			APP.listen( port, host,
 				function onListen( error ){
@@ -1210,20 +1274,13 @@ const upsurge = function upsurge( option ){
 			harden( "API", APIRouter );
 			APP.use( "/api/:key", APIRouter );
 
-			option.router = truu( option.router )? option.router : { };
+			option.router = wichevr( option.router, { } );
 
 			glob( [
 					"server/**/router.js",
 					"server/**/*-router.js"
 
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				].map( resolveService ),
 
 				{ "cwd": rootPath } )
 
@@ -1254,7 +1311,12 @@ const upsurge = function upsurge( option ){
 							Prompt( "router", routerPath, "loaded" );
 						} );
 
-					Prompt( "finished loading router" );
+					if( filled( routerList ) ){
+						Prompt( "finished loading router" );
+
+					}else{
+						Prompt( "no router loaded" );
+					}
 
 					callback( );
 				} )
@@ -1268,19 +1330,12 @@ const upsurge = function upsurge( option ){
 		function loadAPI( callback ){
 			Prompt( "loading API" );
 
-			option.API = truu( option.API )? option.API : { };
+			option.API = wichevr( option.API, { } );
 
 			glob( [
 					"server/**/*-api.js"
 
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				].map( resolveService ),
 
 				{ "cwd": rootPath } )
 
@@ -1311,7 +1366,12 @@ const upsurge = function upsurge( option ){
 							Prompt( "API", APIPath, "loaded" );
 						} );
 
-					Prompt( "finished loading API" );
+					if( filled( APIList ) ){
+						Prompt( "finished loading API" );
+
+					}else{
+						Prompt( "no API loaded" );
+					}
 
 					callback( );
 				} )
@@ -1325,20 +1385,12 @@ const upsurge = function upsurge( option ){
 		function loadFinalizer( callback ){
 			Prompt( "loading finalizer" );
 
-			option.finalizer = truu( option.finalizer )? option.finalizer : { };
+			option.finalizer = wichevr( option.finalizer, { } );
 
 			glob( [
 					"server/**/finalizer.js",
 					"server/**/*-finalizer.js"
-
-				].map( function onEachPattern( pattern ){
-					if( truly( service ) ){
-						return pattern.replace( "**", service );
-
-					}else{
-						return pattern;
-					}
-				} ),
+				],
 
 				{ "cwd": rootPath } )
 
@@ -1374,7 +1426,12 @@ const upsurge = function upsurge( option ){
 						.filter( truly ),
 
 						function lastly( ){
-							Prompt( "finished loading finalizer" );
+							if( filled( finalizerList ) ){
+								Prompt( "finished loading finalizer" );
+
+							}else{
+								Prompt( "no finalizer loaded" );
+							}
 
 							callback( );
 						} );
@@ -1397,6 +1454,10 @@ const upsurge = function upsurge( option ){
 		}
 	}
 
+	blacksea( Fatal );
+	bluesea( Fatal );
+	redsea( Issue );
+
 	series( flow
 		.map( function onEachFlow( procedure ){
 			let name = procedure.name;
@@ -1413,10 +1474,13 @@ const upsurge = function upsurge( option ){
 		} ),
 
 		function lastly( issue ){
-			let server = OPTION.environment.server;
+			let environment = wichevr( OPTION.environment, { } );
+			let server = wichevr( environment.server, { } );
 			let rootServer = server;
-			if( service ){
-				server = OPTION.environment[ service ].server;
+			if( truly( service ) &&
+		 		truly( environment[ service ] ) )
+			{
+				server = wichevr( environment[ service ].server, { } );
 			}
 
 			if( issue ){
@@ -1426,9 +1490,9 @@ const upsurge = function upsurge( option ){
 					.prompt( );
 
 			}else{
-				let protocol = server.protocol || rootServer.protocol;
-				let domain = server.domain || rootServer.domain;
-				let port = server.port || rootServer.port;
+				let protocol = wichevr( server.protocol, rootServer.protocol, DEFAULT_PROTOCOL );
+				let domain = wichevr( server.domain, rootServer.domain, DEFAULT_DOMAIN );
+				let port = wichevr( server.port, rootServer.port, DEFAULT_PORT );
 
 				Prompt( "finished loading application" )
 					.remind( `use ${ protocol }://${ domain }:${ port }` )
