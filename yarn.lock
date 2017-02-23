@@ -674,6 +674,18 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+comex@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/comex/-/comex-0.3.0.tgz#97a6dca35e621bfbe734251e4131b52c76c61484"
+  dependencies:
+    arid "^0.15.0"
+    diatom "^0.13.0"
+    falzy "^0.13.0"
+    gnaw "^0.6.0"
+    plough "^0.14.0"
+    protype "^0.17.0"
+    truly "^0.13.0"
+
 compressible@~2.0.8:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.9.tgz#6daab4e2b599c2770dd9e21e7a891b1c5a755425"
@@ -1924,6 +1936,21 @@ gnaw@^0.5.0:
     harden "^0.16.0"
     letgo "^0.18.0"
     optall "^0.10.0"
+    protype "^0.17.0"
+    raze "^0.19.0"
+    truly "^0.13.0"
+    zelf "^0.8.0"
+
+gnaw@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/gnaw/-/gnaw-0.6.0.tgz#53cb5366b902a0027938be81339b7cfcac9a6175"
+  dependencies:
+    clazof "^0.12.0"
+    depher "^0.17.0"
+    falzy "^0.13.0"
+    harden "^0.16.0"
+    letgo "^0.19.0"
+    optall "^0.11.0"
     protype "^0.17.0"
     raze "^0.19.0"
     truly "^0.13.0"

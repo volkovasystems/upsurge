@@ -6,6 +6,7 @@ called \
 cheson \
 clazof \
 cobralize \
+comex \
 compression \
 connect-mongo \
 cookie-parser \
@@ -21,6 +22,7 @@ falzy \
 filled \
 fs-extra \
 globby \
+gnaw \
 harden \
 helmet \
 jersy \

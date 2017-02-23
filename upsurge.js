@@ -50,10 +50,6 @@
 		Currently, default support for mongodb/mongoose.
 	@end-module-documentation
 
-	@todo:
-		Use gnaw for any commands.
-	@end-todo
-
 	@include:
 		{
 			"async": "async",
@@ -61,9 +57,9 @@
 			"bodyParser": "body-parser",
 			"called": "called",
 			"cheson": "cheson",
-			"child": "child_process",
 			"clazof": "clazof",
 			"cobralize": "cobralize",
+			"comex": "comex",
 			"compression": "compression",
 			"cookieParser": "cookie-parser",
 			"csrf": "csurf",
@@ -75,6 +71,8 @@
 			"falzy": "falzy",
 			"filled": "filled",
 			"fs": "fs-extra",
+			"glob": "globby",
+			"gnaw": "gnaw",
 			"harden": "harden",
 			"helmet": "helmet",
 			"http": "http",
@@ -115,9 +113,9 @@ const bluesea = require( "bluesea" );
 const bodyParser = require( "body-parser" );
 const called = require( "called" );
 const cheson = require( "cheson" );
-const child = require( "child_process" );
 const clazof = require( "clazof" );
 const cobralize = require( "cobralize" );
+const comex = require( "comex" );
 const compression = require( "compression" );
 const cookieParser = require( "cookie-parser" );
 const csrf = require( "csurf" );
@@ -131,6 +129,7 @@ const falzy = require( "falzy" );
 const filled = require( "filled" );
 const fs = require( "fs-extra" );
 const glob = require( "globby" );
+const gnaw = require( "gnaw" );
 const harden = require( "harden" );
 const helmet = require( "helmet" );
 const http = require( "http" );
@@ -249,12 +248,16 @@ const upsurge = function upsurge( option ){
 
 	let flow = [
 		function killExistingProcess( callback ){
+			Prompt( "killing existing processes" );
+
 			dexist( "mongod", function onKill( error ){
 				if( clazof( error, Error ) ){
 					Issue( "killing existing mongod process", error )
 						.pass( callback );
 
 				}else{
+					Prompt( "mongod processes killed" );
+
 					callback( );
 				}
 			} );
@@ -579,14 +582,19 @@ const upsurge = function upsurge( option ){
 
 					try{
 						database.forEach( function onEachDatabase( database ){
-							if( databaseOption[ database ].url ){
+							databaseOption[ database ] = wichevr( databaseOption[ database ], { } );
+							let option = databaseOption[ database ];
+
+							if( truly( option.url ) ){
+								Prompt( "cannot create database directory" )
+									.remind( `${ database } will be connected via ${ option.url }` );
+
 								return;
 							}
 
-							let databaseDirectoryName = "." + database + "-database";
-							let directory = path.resolve( rootPath, databaseDirectoryName );
+							let directory = path.resolve( rootPath, `.${ database }-database` );
 
-							databaseOption[ database ].directory = directory;
+							option.directory = directory;
 
 							if( !kept( directory, true ) ){
 								Prompt( "creating database directory", directory );
@@ -626,7 +634,10 @@ const upsurge = function upsurge( option ){
 						database.forEach( function onEachDatabase( database ){
 							let option = databaseOption[ database ];
 
-							if( option.url ){
+							if( truly( option.url ) ){
+								Prompt( "cannot create database log" )
+									.remind( `${ database } will be connected via ${ option.url }` );
+
 								return;
 							}
 
@@ -670,44 +681,37 @@ const upsurge = function upsurge( option ){
 
 					try{
 						database.forEach( function onEachDatabase( database ){
-							if( databaseOption[ database ].url ){
+							let option = databaseOption[ database ];
+
+							if( truly( option.url ) ){
+								Prompt( "cannot start database server" )
+									.remind( `${ database } will be connected via ${ option.url }` );
+
 								return;
 							}
 
-							let mongoProcess = child.execSync( [
-								"ps aux",
-								"grep mongod",
-								"grep " + database
-							].join( " | " ) ).toString( );
+							let mongoProcess = comex( "ps aux" )
+								.pipe( "grep -v grep" )
+								.pipe( "grep mongod" )
+								.pipe( "grep", database )
+								.execute( );
 
-							let mongodbVersion = databaseOption[ database ].version ||
-								child.execSync( "m --stable" )
-									.toString( )
-									.replace( /\s/g, "" );
+							let mongodbVersion = wichevr( option.version, gnaw( "m --stable", true ) );
 
-							let mongodbPath = child.execSync( "m bin @version"
-								.replace( "@version", mongodbVersion ) )
-								.toString( )
-								.replace( /\s/g, "" );
-
-							let choice = databaseOption[ database ];
+							let mongodbPath = gnaw( `m bin ${ mongodbVersion }`, true );
 
 							if( ( new RegExp( database ) ).test( mongoProcess ) &&
 								( /mongod \-\-fork/ ).test( mongoProcess ) )
 							{
-								Prompt( "database process", database, "is already running" );
-
-								Prompt( "stopping database", database, "process" );
+								Prompt( "database process", database, "is already running" )
+									.remind( "stopping database", database, "process" );
 
 								try{
-									child.execSync( [
-										path.resolve( mongodbPath, "mongo" ),
-											"--port", choice.port,
-											"--eval",
-											`'db.getSiblingDB( "admin" ).shutdownServer( )'`
-									].join( " " ) );
-
-
+									comex( path.resolve( mongodbPath, "mongo" ) )
+										.join( "--port", option.port )
+										.join( "--eval" )
+										.join( `'db.getSiblingDB( "admin" ).shutdownServer( )'` )
+										.execute( );
 
 								}catch( error ){
 									Warning( "cannot stop database process that is dead" )
@@ -716,10 +720,9 @@ const upsurge = function upsurge( option ){
 								}
 
 								try{
-									child.execSync( [
-										"rm -fv",
-										path.resolve( choice.directory, "mongod.lock" )
-									].join( " " ) );
+									comex( "rm -fv" )
+										.join( path.resolve( option.directory, "mongod.lock" ) )
+										.execute( );
 
 								}catch( error ){
 									Warning( "cannot remove mongod.lock file", error )
@@ -731,28 +734,21 @@ const upsurge = function upsurge( option ){
 
 							Prompt( "starting database process", database );
 
-							let command = [
-								path.resolve( mongodbPath, "mongod" ),
-									"--fork",
-									"--logpath", choice.log,
-									"--port", choice.port,
-									"--bind_ip", choice.host,
-									"--dbpath", choice.directory,
-									"--smallfiles",
-									"&>", choice.log,
-									"&"
-							].join( " " );
+							comex( path.resolve( mongodbPath, "mongod" ) )
+								.join( "--fork" )
+								.join( "--logpath", option.log )
+								.join( "--port", option.port )
+								.join( "--bind_ip", option.host )
+								.join( "--dbpath", option.directory )
+								.join( "--smallfiles" )
+								.log( option.log )
+								.background( )
+								.execute( );
 
-							child.execSync( command );
-
-							choice.url = [
-								"mongodb:/",
-								choice.host + ":" + choice.port,
-								database
-							].join( "/" );
+							option.url = `mongodb://${ option.host }:${ option.port }/${ database }`;
 
 							Prompt( "database", database, "started" )
-								.remind( "using connection", choice.url );
+								.remind( "using connection", option.url );
 						} );
 
 						Prompt( "finished initializing database process" );
