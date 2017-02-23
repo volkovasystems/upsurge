@@ -1,10 +1,10 @@
 {
   "name": "upsurge",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
-    "preinstall": "yarn global add n && yarn global add m && n lts && m stable",
+    "preinstall": "npm install n m --global && n lts && m stable",
     "test": "mocha upsurge-test.js"
   },
   "repository": {
