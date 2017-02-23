@@ -13,10 +13,12 @@ csurf \
 dexer \
 dexist \
 dictate \
+empt \
 express \
 express-session \
 falze \
 falzy \
+filled \
 fs-extra \
 globby \
 harden \
@@ -26,7 +28,6 @@ kept \
 kirov \
 komento \
 llamalize \
-lodash \
 madhatter \
 method-override \
 mongoose \
@@ -34,10 +35,14 @@ offcache \
 olivant \
 pedon \
 protype \
+redupe \
 ribosome \
 ssbolt \
+stuffed \
+touche \
 truly \
 truu \
 veur \
+wichevr \
 yargs \
 --save
