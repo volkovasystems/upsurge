@@ -674,16 +674,19 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-comex@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/comex/-/comex-0.3.0.tgz#97a6dca35e621bfbe734251e4131b52c76c61484"
+comex@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/comex/-/comex-0.4.0.tgz#8a56d96e114a09db815f8107de4bbc8e047e71f2"
   dependencies:
     arid "^0.15.0"
+    depher "^0.17.0"
     diatom "^0.13.0"
     falzy "^0.13.0"
     gnaw "^0.6.0"
+    optfor "^0.16.0"
     plough "^0.14.0"
     protype "^0.17.0"
+    raze "^0.19.0"
     truly "^0.13.0"
 
 compressible@~2.0.8:
