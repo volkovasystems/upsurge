@@ -693,14 +693,15 @@ const upsurge = function upsurge( option ){
 							let mongoProcess = comex( "ps aux" )
 								.pipe( "grep -v grep" )
 								.pipe( "grep mongod" )
-								.pipe( "grep", database )
+								.pipe( "grep", `${ database }-database` )
 								.execute( );
 
 							let mongodbVersion = wichevr( option.version, gnaw( "m --stable", true ) );
 
 							let mongodbPath = gnaw( `m bin ${ mongodbVersion }`, true );
 
-							if( ( new RegExp( database ) ).test( mongoProcess ) &&
+							if( truly( mongoProcess ) &&
+								( new RegExp( database ) ).test( mongoProcess ) &&
 								( /mongod \-\-fork/ ).test( mongoProcess ) )
 							{
 								Prompt( "database process", database, "is already running" )

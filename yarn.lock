@@ -717,12 +717,12 @@ connect-mongo@^1.3.2:
     bluebird "^3.0"
     mongodb ">= 1.2.0 <3.0.0"
 
-connect@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/connect/-/connect-3.5.0.tgz#b357525a0b4c1f50599cd983e1d9efeea9677198"
+connect@3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.0.tgz#f09a4f7dcd17324b663b725c815bdb1c4158a46e"
   dependencies:
-    debug "~2.2.0"
-    finalhandler "0.5.0"
+    debug "2.6.1"
+    finalhandler "1.0.0"
     parseurl "~1.3.1"
     utils-merge "1.0.0"
 
@@ -1560,13 +1560,17 @@ ethernity@^0.12.0:
     truly "^0.13.0"
     u200b "^0.15.0"
 
-excursio@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/excursio/-/excursio-0.1.0.tgz#41d90cf9d71cd902556cabe33934ccd7ad8e3634"
+excursio@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/excursio/-/excursio-0.3.0.tgz#a129ff6bea2236ed04d98882def4ab048e20d7bf"
   dependencies:
-    komento "^0.9.0"
-    protype "^0.8.0"
-    zelf "^0.4.0"
+    babel-runtime "^6.23.0"
+    calcify "^0.5.0"
+    falzy "^0.13.0"
+    komento "^0.15.0"
+    protype "^0.17.0"
+    wichevr "^0.0.0"
+    zelf "^0.8.0"
 
 exorcise@^0.3.0:
   version "0.3.0"
@@ -1785,16 +1789,6 @@ filled@^0.8.0:
     raze "^0.16.0"
     truly "^0.11.0"
 
-finalhandler@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-0.5.0.tgz#e9508abece9b6dba871a6942a1d7911b91911ac7"
-  dependencies:
-    debug "~2.2.0"
-    escape-html "~1.0.3"
-    on-finished "~2.3.0"
-    statuses "~1.3.0"
-    unpipe "~1.0.0"
-
 finalhandler@0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-0.5.1.tgz#2c400d8d4530935bc232549c5fa385ec07de6fcd"
@@ -1802,6 +1796,18 @@ finalhandler@0.5.1:
     debug "~2.2.0"
     escape-html "~1.0.3"
     on-finished "~2.3.0"
+    statuses "~1.3.1"
+    unpipe "~1.0.0"
+
+finalhandler@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.0.0.tgz#b5691c2c0912092f18ac23e9416bde5cd7dc6755"
+  dependencies:
+    debug "2.6.1"
+    encodeurl "~1.0.1"
+    escape-html "~1.0.3"
+    on-finished "~2.3.0"
+    parseurl "~1.3.1"
     statuses "~1.3.1"
     unpipe "~1.0.0"
 
@@ -2019,11 +2025,11 @@ helmet-csp@2.3.0:
     lodash.reduce "4.6.0"
     platform "1.3.3"
 
-helmet@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.4.0.tgz#05a9437486b05ca219ed8d21dc5e3b6ec0c18118"
+helmet@^3.4.0, helmet@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.4.1.tgz#27d37629227f25a110f2a128bfe1b1028648a397"
   dependencies:
-    connect "3.5.0"
+    connect "3.6.0"
     dns-prefetch-control "0.1.0"
     dont-sniff-mimetype "1.0.0"
     frameguard "3.0.0"
@@ -2443,17 +2449,19 @@ komento@^0.14.0:
     stuffed "^0.12.0"
     truly "^0.13.0"
 
-komento@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/komento/-/komento-0.9.0.tgz#94834367d744e1cab484360fc9e6cd5b5ee8495d"
+komento@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/komento/-/komento-0.15.0.tgz#0f0fb625b001adc2bf8b5f401a684bdaea136c24"
   dependencies:
-    babel-runtime "^6.20.0"
+    babel-runtime "^6.23.0"
+    depher "^0.17.0"
+    falzy "^0.13.0"
     handlebars "^4.0.6"
-    harden "^0.12.0"
-    protype "^0.7.0"
-    realign "^0.3.0"
-    stuffed "^0.2.0"
-    truly "^0.5.0"
+    protype "^0.17.0"
+    realign "^0.8.0"
+    stuffed "^0.12.0"
+    truly "^0.13.0"
+    wichevr "^0.0.0"
 
 kount@^0.4.0:
   version "0.4.0"
@@ -2642,6 +2650,16 @@ lire@^0.5.0:
     falzy "^0.13.0"
     kept "^0.11.0"
     letgo "^0.18.0"
+    protype "^0.17.0"
+    zelf "^0.8.0"
+
+lire@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/lire/-/lire-0.6.0.tgz#5e072eb7488a97b1dba0058fed8eac5e460ab7c3"
+  dependencies:
+    falzy "^0.13.0"
+    kept "^0.12.0"
+    letgo "^0.19.0"
     protype "^0.17.0"
     zelf "^0.8.0"
 
@@ -3740,16 +3758,6 @@ readable-stream@2.1.5:
     string_decoder "~0.10.x"
     util-deprecate "~1.0.1"
 
-realign@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/realign/-/realign-0.3.0.tgz#209241a3ed36eae8e9889007abe2d0a91db029a5"
-  dependencies:
-    babel-runtime "^6.20.0"
-    falzy "^0.7.0"
-    harden "^0.12.0"
-    protype "^0.7.0"
-    truly "^0.5.0"
-
 realign@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/realign/-/realign-0.4.0.tgz#492be0c3b648216cc8d75f59d2ae59bb4e408af8"
@@ -3779,6 +3787,16 @@ realign@^0.7.0:
     harden "^0.16.0"
     protype "^0.17.0"
     truly "^0.13.0"
+
+realign@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/realign/-/realign-0.8.0.tgz#49bc6d4360d7ee9a355ed653d8b4e3bcf2945991"
+  dependencies:
+    babel-runtime "^6.23.0"
+    falzy "^0.13.0"
+    protype "^0.17.0"
+    truly "^0.13.0"
+    wichevr "^0.0.0"
 
 redsea@^0.5.0:
   version "0.5.0"
@@ -3852,16 +3870,20 @@ resolve-from@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
 
-ribosome@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/ribosome/-/ribosome-0.1.0.tgz#c87b32b51094b6218af482e4c0e75d3e8d087777"
+ribosome@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ribosome/-/ribosome-0.2.0.tgz#b4f554f79ba534188fb03aaa540b749122554142"
   dependencies:
-    asea "^0.6.0"
-    babel-runtime "^6.20.0"
-    doubt "^0.6.0"
-    excursio "^0.1.0"
-    komento "^0.9.0"
-    protype "^0.8.0"
+    asea "^0.10.0"
+    babel-runtime "^6.23.0"
+    doubt "^0.17.0"
+    excursio "^0.3.0"
+    falzy "^0.13.0"
+    komento "^0.15.0"
+    lire "^0.6.0"
+    protype "^0.17.0"
+    wichevr "^0.1.0"
+    wichis "^0.1.0"
 
 right-align@^0.1.1:
   version "0.1.3"
@@ -4092,7 +4114,7 @@ stack-trace@^0.0.9:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/stack-trace/-/stack-trace-0.0.9.tgz#a8f6eaeca90674c333e7c43953f275b451510695"
 
-"statuses@>= 1.3.1 < 2", statuses@~1.3.0, statuses@~1.3.1:
+"statuses@>= 1.3.1 < 2", statuses@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
 
@@ -4631,6 +4653,22 @@ wichevr@^0.0.0:
     babel-runtime "^6.23.0"
     raze "^0.19.0"
     truly "^0.13.0"
+
+wichevr@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/wichevr/-/wichevr-0.1.0.tgz#8415274866107a2c9a281ae10eb772388fc07853"
+  dependencies:
+    babel-runtime "^6.23.0"
+    raze "^0.19.0"
+    truly "^0.13.0"
+
+wichis@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/wichis/-/wichis-0.1.0.tgz#2cdbd10525f18e749a89560b1a5d6d72a264d1af"
+  dependencies:
+    babel-runtime "^6.23.0"
+    raze "^0.19.0"
+    truu "^0.12.0"
 
 window-size@0.1.0:
   version "0.1.0"
