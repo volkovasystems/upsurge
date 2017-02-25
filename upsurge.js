@@ -1462,7 +1462,13 @@ const upsurge = function upsurge( option ){
 			let delegate = function delegate( callback ){
 				callback = called( callback );
 
-				return procedure( callback );
+				try{
+					return procedure( callback );
+
+				}catch( error ){
+					Fatal( error )
+						.remind( "process exiting" );
+				}
 			};
 
 			ate( "name", name, delegate );
