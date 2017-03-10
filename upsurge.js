@@ -390,7 +390,7 @@ const upsurge = function upsurge( option ){
 
 					harden( "OPTION", OPTION );
 
-					if( empt( OPTION ) ){
+					if( stuffed( OPTION ) ){
 						Prompt( "finished loading option" );
 
 					}else{
@@ -1094,9 +1094,9 @@ const upsurge = function upsurge( option ){
 			if( truu( clientOption ) ){
 				let environment = ribosome( function template( ){
 					/*!
-						let client = JSON.parse( '$client' );
+						var client = JSON.parse( '$client' );
 
-						for( let property in client ){
+						for( var property in client ){
 							harden( property, client[ property ], window );
 						}
 
@@ -1109,7 +1109,7 @@ const upsurge = function upsurge( option ){
 				}, {
 					"name": "environment",
 					"dependency": [
-						"harden@" + path.resolve( rootPath, "node_modules/harden/harden.js" )
+						"harden@" + path.resolve( rootPath, "node_modules/harden/harden.deploy.js" )
 					]
 				} );
 
