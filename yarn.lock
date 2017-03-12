@@ -2249,6 +2249,12 @@ harden@^0.17.0:
   dependencies:
     babel-runtime "^6.23.0"
 
+harden@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/harden/-/harden-0.18.0.tgz#49f856177bc199928e054fa9f15c11a3a3a1785c"
+  dependencies:
+    babel-runtime "^6.23.0"
+
 has-ansi@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/has-ansi/-/has-ansi-2.0.0.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
@@ -2313,9 +2319,9 @@ hide-powered-by@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.0.0.tgz#4a85ad65881f62857fc70af7174a1184dccce32b"
 
-hooks-fixed@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/hooks-fixed/-/hooks-fixed-1.2.0.tgz#0d2772d4d7d685ff9244724a9f0b5b2559aac96b"
+hooks-fixed@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/hooks-fixed/-/hooks-fixed-2.0.0.tgz#a01d894d52ac7f6599bbb1f63dfc9c411df70cba"
 
 hosted-git-info@^2.1.4:
   version "2.2.0"
@@ -2413,8 +2419,8 @@ is-arrayish@^0.2.1:
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
 
 is-buffer@^1.0.2:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.4.tgz#cfc86ccd5dc5a52fa80489111c6920c457e2d98b"
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.5.tgz#1f3b26ef613b214b88cbca23cc6c01d87961eecc"
 
 is-builtin-module@^1.0.0:
   version "1.0.0"
@@ -3056,14 +3062,15 @@ lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
 
-madhatter@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/madhatter/-/madhatter-0.4.0.tgz#da8f3861c2b124ae2cd890f70e9cd70bfe5279b4"
+madhatter@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/madhatter/-/madhatter-0.5.0.tgz#2f24b82d59ef951c42525d3383b483d1c7d7715e"
   dependencies:
-    asea "^0.6.0"
-    babel-runtime "^6.20.0"
+    asea "^0.11.0"
+    babel-runtime "^6.23.0"
     esprima "^3.1.3"
-    syntax-error "^1.1.6"
+    lire "^0.6.0"
+    syntax-error "^1.3.0"
     unused "^0.2.2"
 
 media-typer@0.3.0:
@@ -3210,13 +3217,13 @@ mongodb@2.2.24, "mongodb@>= 1.2.0 <3.0.0":
     mongodb-core "2.1.8"
     readable-stream "2.1.5"
 
-mongoose@^4.8.6:
-  version "4.8.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.8.6.tgz#f1b376b243fe86f54d5d5cddc7b990aade858f0d"
+mongoose@^4.8.7:
+  version "4.8.7"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.8.7.tgz#3c650e51c123e53733b9479a6fc8578be33ee06e"
   dependencies:
     async "2.1.4"
     bson "~1.0.4"
-    hooks-fixed "1.2.0"
+    hooks-fixed "2.0.0"
     kareem "1.2.1"
     mongodb "2.2.24"
     mpath "0.2.1"
@@ -4735,7 +4742,7 @@ symbiote@^0.8.0:
     protype "^0.11.0"
     raze "^0.12.0"
 
-syntax-error@^1.1.6:
+syntax-error@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/syntax-error/-/syntax-error-1.3.0.tgz#1ed9266c4d40be75dc55bf9bb1cb77062bb96ca1"
   dependencies:
@@ -5075,8 +5082,8 @@ u200b@^0.9.0:
     truly "^0.9.0"
 
 uglify-js@^2.6:
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.11.tgz#11a51c43d810b47bc00aee4d512cb3947ddd1ac4"
+  version "2.8.12"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.12.tgz#8a50f5d482243650b7108f6080aa3a6afe2a6c55"
   dependencies:
     source-map "~0.5.1"
     uglify-to-browserify "~1.0.0"
@@ -5122,28 +5129,28 @@ vary@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.0.tgz#e1e5affbbd16ae768dd2674394b9ad3022653140"
 
-veur@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/veur/-/veur-0.1.0.tgz#2034f2adeb9bba9739468f54d96a04fe9a12b9b9"
+veur@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/veur/-/veur-0.2.0.tgz#4cfbbe0b64b619c8779fa4d3ab2c76330b16a76e"
   dependencies:
-    clazof "^0.10.0"
-    express "^4.14.1"
+    clazof "^0.14.0"
+    express "^4.15.2"
     express-rate-limit "^2.6.0"
-    falze "^0.8.0"
-    falzy "^0.11.0"
+    falze "^0.16.0"
+    falzy "^0.15.0"
     handlebars "^4.0.6"
-    harden "^0.14.0"
-    kein "^0.9.0"
-    kept "^0.10.0"
-    lilfy "^0.7.0"
-    lire "^0.4.0"
-    offcache "^0.4.0"
-    olivant "^0.18.0"
-    parseon "^0.3.0"
-    protype "^0.15.0"
-    stuffed "^0.9.0"
-    truly "^0.11.0"
-    truu "^0.9.0"
+    harden "^0.18.0"
+    kein "^0.14.0"
+    kept "^0.12.0"
+    lilfy "^0.8.0"
+    lire "^0.6.0"
+    offcache "^0.5.0"
+    olivant "^0.20.0"
+    parseon "^0.4.0"
+    protype "^0.19.0"
+    stuffed "^0.17.0"
+    truly "^0.15.0"
+    truu "^0.19.0"
 
 vound@^0.6.0:
   version "0.6.0"

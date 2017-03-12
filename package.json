@@ -1,6 +1,6 @@
 {
   "name": "upsurge",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "description": "Default server resources loading procedure based on standard practice.",
   "main": "upsurge.js",
   "scripts": {
@@ -51,16 +51,16 @@
     "fs-extra": "^2.0.0",
     "globby": "^6.1.0",
     "gnaw": "^0.6.0",
-    "harden": "^0.17.0",
+    "harden": "^0.18.0",
     "helmet": "^3.5.0",
     "jersy": "^0.1.0",
     "kept": "^0.12.0",
     "kirov": "^0.6.0",
     "komento": "^0.17.0",
     "llamalize": "^0.10.0",
-    "madhatter": "^0.4.0",
+    "madhatter": "^0.5.0",
     "method-override": "^2.3.7",
-    "mongoose": "^4.8.6",
+    "mongoose": "^4.8.7",
     "offcache": "^0.5.0",
     "olivant": "^0.20.0",
     "pedon": "^0.9.0",
@@ -72,7 +72,7 @@
     "touche": "^0.2.0",
     "truly": "^0.15.0",
     "truu": "^0.19.0",
-    "veur": "^0.1.0",
+    "veur": "^0.2.0",
     "wichevr": "^0.4.0",
     "yargs": "^7.0.2"
   }
