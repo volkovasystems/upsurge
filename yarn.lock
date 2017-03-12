@@ -659,6 +659,18 @@ clazof@^0.14.0:
     stringe "^0.1.0"
     wauker "^0.3.0"
 
+clazof@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/clazof/-/clazof-0.15.0.tgz#1c6295174f840e5beafef44afc874b9fe52a351e"
+  dependencies:
+    babel-runtime "^6.23.0"
+    falzy "^0.15.0"
+    portel "^0.1.0"
+    protype "^0.19.0"
+    raze "^0.22.0"
+    stringe "^0.1.0"
+    wauker "^0.3.0"
+
 clazof@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/clazof/-/clazof-0.4.0.tgz#d70192b2ce345f66cf4d1c6a145428cd1298fc9b"
@@ -1746,14 +1758,16 @@ ethernity@^0.12.0:
     truly "^0.13.0"
     u200b "^0.15.0"
 
-excursio@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/excursio/-/excursio-0.4.0.tgz#ba2277e439b3afdac6052fa184df90735c5917fe"
+excursio@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/excursio/-/excursio-0.5.0.tgz#10d2b72458d1da613307b59b06a0dfc4e20f5643"
   dependencies:
     babel-runtime "^6.23.0"
+    clazof "^0.15.0"
     depher "^0.19.0"
     falzy "^0.15.0"
     komento "^0.17.0"
+    madhatter "^0.5.0"
     protype "^0.19.0"
     rmor "^0.0.0"
     wichis "^0.7.0"
@@ -4308,14 +4322,14 @@ resolve-from@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
 
-ribosome@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/ribosome/-/ribosome-0.4.0.tgz#6abdd97e721bda90bb10e6b26a383ba9ce9769f5"
+ribosome@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/ribosome/-/ribosome-0.5.0.tgz#06044b201efbd7880b0351dc1a506a6a99312565"
   dependencies:
     asea "^0.11.0"
     babel-runtime "^6.23.0"
     doubt "^0.21.0"
-    excursio "^0.4.0"
+    excursio "^0.5.0"
     falzy "^0.15.0"
     kept "^0.12.0"
     komento "^0.17.0"
