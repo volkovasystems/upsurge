@@ -97,7 +97,6 @@
 			"truly": "truly",
 			"truu": "truu",
 			"path": "path",
-			"util": "util",
 			"veur": "veur",
 			"wichevr": "wichevr",
 			"yargs": "yargs"
@@ -139,6 +138,7 @@ const kept = require( "kept" );
 const kirov = require( "kirov" );
 const komento = require( "komento" );
 const llamalize = require( "llamalize" );
+const loosen = require( "loosen" );
 const madhatter = require( "madhatter" );
 const methodOverride = require( "method-override" );
 const mongoose = require( "mongoose" );
@@ -156,7 +156,7 @@ const touche = require( "touche" );
 const truly = require( "truly" );
 const truu = require( "truu" );
 const path = require( "path" );
-const util = require( "util" );
+const U200b = require( "u200b" );
 const veur = require( "veur" );
 const wichevr = require( "wichevr" );
 const yarg = require( "yargs" );
@@ -369,8 +369,6 @@ const upsurge = function upsurge( option ){
 						.forEach( function onEachOption( optionPath ){
 							Prompt( "loading option", optionPath );
 
-							let option = require( optionPath );
-
 							OPTION = redupe( OPTION, require( optionPath ), true );
 
 							Prompt( "option", optionPath, "loaded" );
@@ -386,6 +384,18 @@ const upsurge = function upsurge( option ){
 						}else{
 							OPTION.environment = wichevr( OPTION.local, { } );
 						}
+					}
+
+					if( truu( OPTION.environment ) ){
+						harden( "ENVIRONMENT", OPTION.environment );
+
+						let environment = loosen( ENVIRONMENT, true );
+						Object.getOwnPropertyNames( environment )
+							.forEach( ( property ) => {
+								let constant = U200b( property ).replace( ".", "_" ).toUpperCase( );
+
+								harden( constant, environment[ property ] );
+							} );
 					}
 
 					harden( "OPTION", OPTION );
@@ -1438,6 +1448,72 @@ const upsurge = function upsurge( option ){
 					Issue( "loading finalizer", error )
 						.pass( callback );
 				} );
+		},
+
+		function loadTest( callback ){
+			if( parameter.test && !parameter.production && !parameter.staging ){
+				Prompt( "loading test" );
+
+				option.test = wichevr( option.test, { } );
+
+				glob( [
+						"server/**/test.js",
+						"server/**/*-test.js"
+					],
+
+					{ "cwd": rootPath } )
+
+					.then( function onEachTest( testList ){
+						series( dictate( testList, option.test.order )
+							.map( function onEachTest( testPath ){
+								return path.resolve( rootPath, testPath );
+							} )
+							.map( function onEachTest( testPath ){
+								let error = madhatter( testPath );
+
+								if( clazof( error, Error ) ){
+									Fatal( "syntax error", error, testPath )
+										.pass( callback );
+
+								}else{
+									return testPath;
+								}
+							} )
+							.filter( truly )
+							.map( function onEachTest( testPath ){
+								Prompt( "loading test", testPath );
+
+								let test = require( testPath );
+
+								if( protype( test, FUNCTION ) ){
+									return test;
+
+								}else{
+									Prompt( "test", testPath, "loaded" );
+								}
+							} )
+							.filter( truly ),
+
+							function lastly( ){
+								if( filled( testList ) ){
+									Prompt( "finished loading test" );
+
+								}else{
+									Prompt( "no test loaded" );
+								}
+
+								callback( );
+							} );
+					} )
+
+					.catch( function onError( error ){
+						Issue( "loading test", error )
+							.pass( callback );
+					} );
+
+			}else{
+				callback( );
+			}
 		}
 	];
 

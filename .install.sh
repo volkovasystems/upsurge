@@ -30,6 +30,7 @@ kept \
 kirov \
 komento \
 llamalize \
+loosen \
 madhatter \
 method-override \
 mongoose \
@@ -44,6 +45,7 @@ stuffed \
 touche \
 truly \
 truu \
+u200b \
 veur \
 wichevr \
 yargs \
