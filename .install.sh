@@ -15,6 +15,7 @@ dexer \
 dexist \
 dictate \
 empt \
+emver \
 express \
 express-session \
 falze \
