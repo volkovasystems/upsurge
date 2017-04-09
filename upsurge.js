@@ -67,6 +67,7 @@
 			"dexist": "dexist",
 			"dictate": "dictate",
 			"empt": "empt",
+			"emver": "emver",
 			"falze": "falze",
 			"falzy": "falzy",
 			"filled": "filled",
@@ -122,6 +123,7 @@ const dexer = require( "dexer" );
 const dexist = require( "dexist" );
 const dictate = require( "dictate" );
 const empt = require( "empt" );
+const emver = require( "emver" );
 const express = require( "express" );
 const falze = require( "falze" );
 const falzy = require( "falzy" );
@@ -704,9 +706,9 @@ const upsurge = function upsurge( option ){
 								.pipe( "grep -v grep" )
 								.pipe( "grep mongod" )
 								.pipe( "grep", `${ database }-database` )
-								.execute( );
+								.execute( true );
 
-							let mongodbVersion = wichevr( option.version, gnaw( "m --stable", true ) );
+							let mongodbVersion = wichevr( option.version, emver( true ) );
 
 							let mongodbPath = gnaw( `m bin ${ mongodbVersion }`, true );
 
@@ -722,7 +724,7 @@ const upsurge = function upsurge( option ){
 										.join( "--port", option.port )
 										.join( "--eval" )
 										.join( `'db.getSiblingDB( "admin" ).shutdownServer( )'` )
-										.execute( );
+										.execute( true );
 
 								}catch( error ){
 									Warning( "cannot stop database process that is dead" )
@@ -733,7 +735,7 @@ const upsurge = function upsurge( option ){
 								try{
 									comex( "rm -fv" )
 										.join( path.resolve( option.directory, "mongod.lock" ) )
-										.execute( );
+										.execute( true );
 
 								}catch( error ){
 									Warning( "cannot remove mongod.lock file", error )
@@ -754,7 +756,7 @@ const upsurge = function upsurge( option ){
 								.join( "--smallfiles" )
 								.log( option.log )
 								.background( )
-								.execute( );
+								.execute( true );
 
 							option.url = `mongodb://${ option.host }:${ option.port }/${ database }`;
 
